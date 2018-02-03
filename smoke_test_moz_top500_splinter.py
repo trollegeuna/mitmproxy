@@ -132,6 +132,7 @@ class TestSmokeCurl(object):
         self.browser = Browser('chrome',
                               options=chrome_options,
                               # executable_path='/usr/local/bin/chromedriver',
+                              executable_path='~/chromedriver/chromedriver',
                               headless=True,
                               incognito=True,
                               service_log_path='/tmp/chromedriver-log.log',
@@ -177,18 +178,18 @@ if __name__ == '__main__':
                         '-n', 'mitmproxy-ca',
                         '-i', os.path.expanduser('~/.mitmproxy/mitmproxy-ca.crt'),
         ])
-        # subprocess.run(['wget',
-        #                 'https://chromedriver.storage.googleapis.com/2.35/chromedriver_linux64.zip',
-        #                 '--directory-prefix', '~/',
-        # ])
-        # subprocess.run(['unzip',
-        #                 '~/chromedriver_linux64.zip',
-        #                 '-d', '~/',
-        # ])
-        # subprocess.run(['chmod',
-        #                 '+x',
-        #                 '~/chromedriver/chromedriver',
-        # ])
+        subprocess.run(['wget',
+                        'https://chromedriver.storage.googleapis.com/2.35/chromedriver_linux64.zip',
+                        '--directory-prefix', '~/',
+        ])
+        subprocess.run(['unzip',
+                        '~/chromedriver_linux64.zip',
+                        '-d', '~/',
+        ])
+        subprocess.run(['chmod',
+                        '+x',
+                        '~/chromedriver/chromedriver',
+        ])
 
     os.environ['SMOKE_TEST_TIMESTAMP'] = time.strftime("%Y%m%d-%H%M")
     print(os.environ['SMOKE_TEST_TIMESTAMP'])

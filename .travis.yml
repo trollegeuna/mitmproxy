@@ -66,6 +66,8 @@ install:
   - pip install tox
 
 script:
+  - whereis google-chrome-stable
+  - whereis chromedriver
   - tox -- --verbose --cov-report=term
   - |
     if [[ $BDIST == "1" ]]
