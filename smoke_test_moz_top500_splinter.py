@@ -115,9 +115,6 @@ def write_protocol(offer_h2, domain, url, fs=None, events=None, logs=None):
     with open('/tmp/chromedriver-log.log') as f:
         print(f.read())
     print('-'*80)
-    with open('/tmp/chromedriver-net-log-output.json') as f:
-        print(f.read())
-    print('-'*80)
     with open("tmp/{}/{}.txt".format(os.environ['SMOKE_TEST_TIMESTAMP'], u)) as f:
         print(f.read())
 
@@ -168,7 +165,7 @@ class TestSmokeCurl(object):
                               headless=True,
                               incognito=True,
                               service_log_path='/tmp/chromedriver-log.log',
-                              service_args=["--verbose", "--log-net-log=/tmp/chromedriver-net-log-output.json"])
+                              service_args=["--verbose"])
 
         self.browser.visit(url)
         assert self.browser.status_code.is_success()
@@ -202,6 +199,15 @@ class TestSmokeCurl(object):
 
 
 if __name__ == '__main__':
+    if platform.platform() == 'Linux':
+        subprocess.run(['certutil',
+                        '-d', 'sql:$HOME/.pki/nssdb',
+                        '-A',
+                        '-t', 'TRUSTARGS',
+                        '-n', 'mitmproxy-ca',
+                        '-i', os.path.expanduser('~/.mitmproxy/mitmproxy-ca.pem')
+        ])
+
     os.environ['SMOKE_TEST_TIMESTAMP'] = time.strftime("%Y%m%d-%H%M")
     print(os.environ['SMOKE_TEST_TIMESTAMP'])
     os.makedirs('tmp/{}'.format(os.environ['SMOKE_TEST_TIMESTAMP']), exist_ok=True)
