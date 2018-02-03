@@ -180,9 +180,9 @@ if __name__ == '__main__':
         )
         opts.cadir = os.path.expanduser("~/.mitmproxy")
         tmaster = tservers.TestMaster(opts)
-        cls.proxy[offer_h2] = tservers.ProxyThread(tmaster)
-        cls.proxy[offer_h2].start()
-        cls.proxy[offer_h2].shutdown()
+        proxy = tservers.ProxyThread(tmaster)
+        proxy.start()
+        proxy.shutdown()
 
         subprocess.run(['certutil',
                         '-d', 'sql:$HOME/.pki/nssdb',
