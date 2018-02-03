@@ -35,6 +35,9 @@ matrix:
       addons:
         chrome: stable
         firefox: latest
+        apt:
+          packages:
+            - libnss3-tools
     - python: 3.6
       env: TOXENV=docs
     - language: node_js
@@ -66,8 +69,6 @@ install:
   - pip install tox
 
 script:
-  - whereis google-chrome-stable
-  - whereis chromedriver
   - tox -- --verbose --cov-report=term
   - |
     if [[ $BDIST == "1" ]]
