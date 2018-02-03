@@ -170,6 +170,20 @@ class TestSmokeCurl(object):
 
 if __name__ == '__main__':
     if platform.platform().startswith('Linux'):
+        opts = options.Options(
+            listen_port=0,
+            upstream_cert=True,
+            ssl_insecure=True,
+            verbosity='debug',
+            flow_detail=99,
+            http2=offer_h2,
+        )
+        opts.cadir = os.path.expanduser("~/.mitmproxy")
+        tmaster = tservers.TestMaster(opts)
+        cls.proxy[offer_h2] = tservers.ProxyThread(tmaster)
+        cls.proxy[offer_h2].start()
+        cls.proxy[offer_h2].shutdown()
+
         subprocess.run(['certutil',
                         '-d', 'sql:$HOME/.pki/nssdb',
                         '-A',
@@ -182,7 +196,7 @@ if __name__ == '__main__':
                         '--directory-prefix', os.path.expanduser('~/'),
         ])
         subprocess.run(['unzip',
-                        '~/chromedriver_linux64.zip',
+                        os.path.expanduser('~/chromedriver_linux64.zip'),
                         '-d', os.path.expanduser('~/'),
         ])
         subprocess.run(['chmod',
