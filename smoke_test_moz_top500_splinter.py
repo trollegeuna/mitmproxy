@@ -170,6 +170,7 @@ class TestSmokeCurl(object):
 
 
 if __name__ == '__main__':
+    print(platform.platform())
     if platform.platform() == 'Linux':
         subprocess.run(['certutil',
                         '-d', 'sql:$HOME/.pki/nssdb',
