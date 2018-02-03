@@ -132,7 +132,7 @@ class TestSmokeCurl(object):
         self.browser = Browser('chrome',
                               options=chrome_options,
                               # executable_path='/usr/local/bin/chromedriver',
-                              executable_path=os.path.expanduser('~/chromedriver/chromedriver'),
+                              executable_path=os.path.expanduser('~/chromedriver'),
                               headless=True,
                               incognito=True,
                               service_log_path='/tmp/chromedriver-log.log',
@@ -186,22 +186,11 @@ if __name__ == '__main__':
                         '~/chromedriver_linux64.zip',
                         '-d', '~/',
         ])
-        print(subprocess.check_output(['ls',
-                        '~/chromedriver',
-        ]))
         subprocess.run(['chmod',
                         '+x',
-                        '~/chromedriver/chromedriver',
+                        '~/chromedriver',
         ])
-        print(subprocess.check_output(['ls',
-                        '~/chromedriver/chromedriver',
-        ]))
-        print(os.environ['PATH'])
         os.environ['PATH'] = ':'.join([os.path.expanduser('~/chromedriver'), os.environ['PATH']])
-        print(subprocess.check_output(['ls',
-                        '~/chromedriver/chromedriver',
-        ]))
-        print(os.environ['PATH'])
 
 
     os.environ['SMOKE_TEST_TIMESTAMP'] = time.strftime("%Y%m%d-%H%M")
