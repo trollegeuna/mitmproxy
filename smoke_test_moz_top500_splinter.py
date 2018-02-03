@@ -185,7 +185,7 @@ if __name__ == '__main__':
         proxy.start()
         proxy.shutdown()
 
-        os.path.makedirs(os.path.expanduser('~/.pki/nssdb'))
+        os.makedirs(os.path.expanduser('~/.pki/nssdb'))
 
         subprocess.run(['certutil',
                         '-d', 'sql:' + os.path.expanduser('~/.pki/nssdb'),
