@@ -1,36 +1,5 @@
 #!/usr/bin/env python3
 
-# example command:
-#   > py.test smoke_test_moz_top500.py -s n 4
-
-"""
-Install on Ubuntu 16.04:
-sudo apt-get install python3-pip python3-dev python3-venv libffi-dev libssl-dev libtiff5-dev libjpeg8-dev zlib1g-dev libwebp-dev
-
-sudo apt-get build-dep nghttp2
-wget https://github.com/nghttp2/nghttp2/releases/download/v1.17.0/nghttp2-1.17.0.tar.bz2
-tar xvjf nghttp2-1.17.0.tar.bz2
-cd nghttp2-1.17.0
-autoreconf -i
-automake
-autoreconf
-./configure --disable-app
-make
-sudo make install
-sudo ldconfig
-
-sudo apt-get build-dep curl
-wget https://curl.haxx.se/download/curl-7.52.1.tar.bz2
-tar xvjf curl-7.52.1.tar.bz2
-cd curl-7.52.1
-./configure
-make
-
-
-
-export PATH=/home/ubuntu/chromedriver_linux64:$PATH
-"""
-
 import tempfile
 import sys
 import os
@@ -40,6 +9,7 @@ import queue
 import threading
 import glob
 import time
+import platform
 
 import pytest
 from flaky import flaky
