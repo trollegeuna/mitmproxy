@@ -190,7 +190,7 @@ if __name__ == '__main__':
                         '-A',
                         '-t', 'TC',
                         '-n', 'mitmproxy-ca',
-                        '-i', os.path.expanduser('~/.mitmproxy/mitmproxy-ca.crt'),
+                        '-i', os.path.expanduser('~/.mitmproxy/mitmproxy-ca-cert.pem'),
         ])
         subprocess.run(['wget',
                         'https://chromedriver.storage.googleapis.com/2.35/chromedriver_linux64.zip',
@@ -213,7 +213,7 @@ if __name__ == '__main__':
     pytest.main(args=['-s',
                       '-v',
                       '-x',
-                    #   '-n', '16',
+                      # '-n', '16',
                       '--no-flaky-report',
                       *sys.argv
                       ])
