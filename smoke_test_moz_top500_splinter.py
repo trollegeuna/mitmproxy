@@ -126,6 +126,7 @@ class TestSmokeCurl(object):
         self.proxy[offer_h2].tmaster.reset([DisableH2C()])
 
         chrome_options = ChromeOptions()
+        chrome_options.add_argument('--no-sandbox')
         chrome_options.add_argument('--proxy-server=http://127.0.0.1:' + str(self.proxy[offer_h2].port))
         if not offer_h2:
             chrome_options.add_argument('--disable-http2')
