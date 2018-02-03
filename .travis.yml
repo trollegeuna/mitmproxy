@@ -2,10 +2,6 @@ sudo: false
 
 language: python
 
-addons:
-  chrome: stable
-  firefox: latest
-
 branches:
   except:
     - requires-io-master
@@ -36,6 +32,9 @@ matrix:
       env: TOXENV=individual_coverage
     - python: 3.6
       env: TOXENV=smoke
+      addons:
+        chrome: stable
+        firefox: latest
     - python: 3.6
       env: TOXENV=docs
     - language: node_js
