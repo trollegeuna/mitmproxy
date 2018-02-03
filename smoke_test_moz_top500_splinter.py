@@ -170,8 +170,7 @@ class TestSmokeCurl(object):
 
 
 if __name__ == '__main__':
-    print(platform.platform())
-    if platform.platform() == 'Linux':
+    if platform.platform().startswith('Linux'):
         subprocess.run(['certutil',
                         '-d', 'sql:$HOME/.pki/nssdb',
                         '-A',
@@ -203,7 +202,6 @@ if __name__ == '__main__':
 
 
     os.environ['SMOKE_TEST_TIMESTAMP'] = time.strftime("%Y%m%d-%H%M")
-    print(os.environ['SMOKE_TEST_TIMESTAMP'])
     os.makedirs('tmp/{}'.format(os.environ['SMOKE_TEST_TIMESTAMP']), exist_ok=True)
     if os.path.islink('tmp/latest'):
         os.remove('tmp/latest')
