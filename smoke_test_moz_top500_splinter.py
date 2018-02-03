@@ -67,15 +67,15 @@ def generate_combinations():
 
     l = [[
             (False, domain, "http://{}".format(domain)),
-            # (False, domain, "https://{}".format(domain)),
+            (False, domain, "https://{}".format(domain)),
             (False, domain, "http://www.{}".format(domain)),
-            # (False, domain, "https://www.{}".format(domain)),
-            # (True, domain, "http://{}".format(domain)),
-            # (True, domain, "http://www.{}".format(domain)),
-            # (True, domain, "https://{}".format(domain)),
-            # (True, domain, "https://www.{}".format(domain)),
+            (False, domain, "https://www.{}".format(domain)),
+            (True, domain, "http://{}".format(domain)),
+            (True, domain, "http://www.{}".format(domain)),
+            (True, domain, "https://{}".format(domain)),
+            (True, domain, "https://www.{}".format(domain)),
         ] for domain in domains]
-    return [item for sublist in l for item in sublist]
+    return [item for sublist in l for item in sublist][:10]
 
 
 def write_protocol(offer_h2, domain, url, message=None, fs=None, events=None, logs=None):
@@ -121,7 +121,7 @@ class TestSmokeCurl(object):
     def setup_class(cls):
         opts = options.Options(
             listen_port=0,
-            upstream_cert=False,
+            upstream_cert=True,
             ssl_insecure=True,
             verbosity='debug',
             flow_detail=99,
@@ -132,25 +132,34 @@ class TestSmokeCurl(object):
         cls.proxy = proxy = tservers.ProxyThread(tmaster)
         cls.proxy.start()
 
-        chrome_options = ChromeOptions()
-        chrome_options.add_argument('--proxy-server=http://127.0.0.1:' + str(cls.proxy.port))
-        cls.browser = Browser('chrome',
-                              options=chrome_options,
-                              executable_path='/usr/local/bin/chromedriver',
-                              headless=True,
-                              incognito=True,
-                              service_args=["--verbose", "--log-path=/tmp/foo.log"])
+        cls.browser = None
 
     @classmethod
     def teardown_class(cls):
         cls.proxy.shutdown()
-        cls.browser.quit()
+
+    def teardown_method(self, method):
+        if self.browser:
+            self.browser.quit()
+            self.browser = None
 
     @flaky(max_runs=3)
     @pytest.mark.parametrize('offer_h2, domain, url', generate_combinations())
     def test_smoke_curl(self, offer_h2, domain, url):
         self.proxy.tmaster.clear()
         self.proxy.tmaster.reset([DisableH2C()])
+
+        chrome_options = ChromeOptions()
+        chrome_options.add_argument('--proxy-server=http://127.0.0.1:' + str(self.proxy.port))
+        if not offer_h2:
+            chrome_options.add_argument('--disable-http2')
+        self.browser = Browser('chrome',
+                              options=chrome_options,
+                              executable_path='/usr/local/bin/chromedriver',
+                              headless=True,
+                              incognito=True,
+                              service_log_path='/tmp/chromedriver-log.log',
+                              service_args=["--verbose", "--log-net-log=/tmp/chromedriver-net-log-output.json"])
 
         self.browser.visit(url)
         assert self.browser.status_code.is_success()
@@ -159,6 +168,10 @@ class TestSmokeCurl(object):
         for f in self.proxy.tmaster.state.flows:
             if f.response:
                 fs[(f.request.http_version, f.request.scheme, f.request.host, f.response.status_code)] = f
+
+        # if not offer_h2:
+        print([k[0] for k in fs.keys()])
+            # assert all([k[0].startswith('HTTP/1') for k in fs.keys()])
 
         no_failed_flows = len([k for k in fs.keys() if k[3] >= 500]) == 0
         if not no_failed_flows:
@@ -190,9 +203,8 @@ if __name__ == '__main__':
     os.symlink(os.environ['SMOKE_TEST_TIMESTAMP'], 'tmp/latest')
     pytest.main(args=['-s',
                       '-v',
-                      # '-x',
+                      '-x',
                     #   '-n', '16',
-                      # '--show-progress',
                       '--no-flaky-report',
                       *sys.argv
                       ])
