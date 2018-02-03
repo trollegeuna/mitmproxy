@@ -203,9 +203,9 @@ if __name__ == '__main__':
         subprocess.run(['certutil',
                         '-d', 'sql:$HOME/.pki/nssdb',
                         '-A',
-                        '-t', 'TRUSTARGS',
+                        '-t', 'TC',
                         '-n', 'mitmproxy-ca',
-                        '-i', os.path.expanduser('~/.mitmproxy/mitmproxy-ca.pem')
+                        '-i', os.path.expanduser('~/.mitmproxy/mitmproxy-ca.crt')
         ])
 
     os.environ['SMOKE_TEST_TIMESTAMP'] = time.strftime("%Y%m%d-%H%M")
