@@ -132,7 +132,7 @@ class TestSmokeCurl(object):
         self.browser = Browser('chrome',
                               options=chrome_options,
                               # executable_path='/usr/local/bin/chromedriver',
-                              executable_path='~/chromedriver/chromedriver',
+                              executable_path=os.path.expanduser('~/chromedriver/chromedriver'),
                               headless=True,
                               incognito=True,
                               service_log_path='/tmp/chromedriver-log.log',
