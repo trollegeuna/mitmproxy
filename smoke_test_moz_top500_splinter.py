@@ -75,7 +75,7 @@ def generate_combinations():
             # (True, domain, "https://{}".format(domain)),
             # (True, domain, "https://www.{}".format(domain)),
         ] for domain in domains]
-    return [item for sublist in l for item in sublist][450:455]
+    return [item for sublist in l for item in sublist]
 
 
 def write_protocol(offer_h2, domain, url, message=None, fs=None, events=None, logs=None):
@@ -126,7 +126,7 @@ class TestSmokeCurl(object):
             verbosity='debug',
             flow_detail=99,
         )
-        opts.cadir = os.path.join(tempfile.gettempdir(), "mitmproxy")
+        opts.cadir = os.path.expanduser("~/.mitmproxy")
         tmaster = tservers.TestMaster(opts)
 
         cls.proxy = proxy = tservers.ProxyThread(tmaster)
@@ -170,21 +170,16 @@ class TestSmokeCurl(object):
             write_protocol(offer_h2, domain, url, fs=fs, events=self.proxy.tmaster.events, logs=self.proxy.tmaster.logs)
         assert successful_flows
 
-        if negotiated_http2:
-            successful_flows = len([k for k in fs.keys() if k[0] == 'HTTP/2.0' and k[3] >= 200 and k[3] <= 399]) >= 1
-            if not successful_flows:
-                write_protocol(offer_h2, domain, url, fs=fs, events=self.proxy.tmaster.events, logs=self.proxy.tmaster.logs)
-            assert successful_flows
-
         for k, flow in [(k, f) for k, f in fs.items() if k[3] == 200]:
             success = flow.error is None and flow.request and flow.response
             if not success:
                 write_protocol(offer_h2, domain, url, fs=fs, events=self.proxy.tmaster.events, logs=self.proxy.tmaster.logs)
             assert success
 
-        for m in self.proxy.tmaster.tlog:
-            assert 'Traceback' not in m
+        for msg in self.proxy.tmaster.logs:
+            assert 'Traceback' not in msg.msg
 
+        write_protocol(offer_h2, domain, url, fs=fs, events=self.proxy.tmaster.events, logs=self.proxy.tmaster.logs)
 
 if __name__ == '__main__':
     os.environ['SMOKE_TEST_TIMESTAMP'] = time.strftime("%Y%m%d-%H%M")
