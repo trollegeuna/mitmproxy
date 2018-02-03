@@ -176,7 +176,7 @@ if __name__ == '__main__':
             ssl_insecure=True,
             verbosity='debug',
             flow_detail=99,
-            http2=offer_h2,
+            http2=True,
         )
         opts.cadir = os.path.expanduser("~/.mitmproxy")
         tmaster = tservers.TestMaster(opts)
