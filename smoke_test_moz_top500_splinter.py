@@ -190,6 +190,16 @@ if __name__ == '__main__':
                         '+x',
                         '~/chromedriver/chromedriver',
         ])
+        print(subprocess.check_output(['ls',
+                        '~/chromedriver/chromedriver',
+        ]))
+        print(os.environ['PATH'])
+        os.environ['PATH'] = os.path.expanduser('~/chromedriver') ':' + os.environ['PATH']
+        print(subprocess.check_output(['ls',
+                        '~/chromedriver/chromedriver',
+        ]))
+        print(os.environ['PATH'])
+
 
     os.environ['SMOKE_TEST_TIMESTAMP'] = time.strftime("%Y%m%d-%H%M")
     print(os.environ['SMOKE_TEST_TIMESTAMP'])
