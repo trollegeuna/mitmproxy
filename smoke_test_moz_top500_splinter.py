@@ -186,6 +186,9 @@ if __name__ == '__main__':
                         '~/chromedriver_linux64.zip',
                         '-d', '~/',
         ])
+        print(subprocess.check_output(['ls',
+                        '~/chromedriver',
+        ]))
         subprocess.run(['chmod',
                         '+x',
                         '~/chromedriver/chromedriver',
