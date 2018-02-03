@@ -131,7 +131,6 @@ class TestSmokeCurl(object):
             chrome_options.add_argument('--disable-http2')
         self.browser = Browser('chrome',
                               options=chrome_options,
-                              # executable_path='/usr/local/bin/chromedriver',
                               executable_path=os.path.expanduser('~/chromedriver'),
                               headless=True,
                               incognito=True,
@@ -180,19 +179,16 @@ if __name__ == '__main__':
         ])
         subprocess.run(['wget',
                         'https://chromedriver.storage.googleapis.com/2.35/chromedriver_linux64.zip',
-                        '--directory-prefix', '~/',
+                        '--directory-prefix', os.path.expanduser('~/'),
         ])
         subprocess.run(['unzip',
                         '~/chromedriver_linux64.zip',
-                        '-d', '~/',
+                        '-d', os.path.expanduser('~/'),
         ])
         subprocess.run(['chmod',
                         '+x',
-                        '~/chromedriver',
+                        os.path.expanduser('~/chromedriver'),
         ])
-        print(subprocess.check_output(['dirname', '~/chromedriver']))
-        os.environ['PATH'] = ':'.join([os.path.expanduser('~/chromedriver'), os.environ['PATH']])
-
 
     os.environ['SMOKE_TEST_TIMESTAMP'] = time.strftime("%Y%m%d-%H%M")
     os.makedirs('tmp/{}'.format(os.environ['SMOKE_TEST_TIMESTAMP']), exist_ok=True)
