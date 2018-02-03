@@ -188,7 +188,7 @@ if __name__ == '__main__':
         os.makedirs(os.path.expanduser('~/.pki/nssdb'))
 
         subprocess.run(['certutil',
-                        '-d', 'sql:' + os.path.expanduser('~/.pki/nssdb'),
+                        '-d', os.path.expanduser('~/.pki/nssdb'),
                         '-A',
                         '-t', 'TC',
                         '-n', 'mitmproxy-ca',
