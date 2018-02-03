@@ -185,8 +185,10 @@ if __name__ == '__main__':
         proxy.start()
         proxy.shutdown()
 
+        os.path.makedirs(os.path.expanduser('~/.pki/nssdb'))
+
         subprocess.run(['certutil',
-                        '-d', 'sql:$HOME/.pki/nssdb',
+                        '-d', 'sql:' + os.path.expanduser('~/.pki/nssdb'),
                         '-A',
                         '-t', 'TC',
                         '-n', 'mitmproxy-ca',
