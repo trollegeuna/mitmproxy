@@ -190,7 +190,7 @@ if __name__ == '__main__':
                         '+x',
                         '~/chromedriver',
         ])
-        print(subprocess.check_output(['which', '~/chromedriver']))
+        print(subprocess.check_output(['dirname', '~/chromedriver']))
         os.environ['PATH'] = ':'.join([os.path.expanduser('~/chromedriver'), os.environ['PATH']])
 
 
