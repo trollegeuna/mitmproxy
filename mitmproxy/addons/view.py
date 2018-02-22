@@ -422,24 +422,24 @@ class View(collections.Sequence):
         """
             Resolve a flow list specification to an actual list of flows.
         """
-        if spec == "@all":
-            return [i for i in self._store.values()]
-        if spec == "@focus":
-            return [self.focus.flow] if self.focus.flow else []
-        elif spec == "@shown":
-            return [i for i in self]
-        elif spec == "@hidden":
-            return [i for i in self._store.values() if i not in self._view]
-        elif spec == "@marked":
-            return [i for i in self._store.values() if i.marked]
-        elif spec == "@unmarked":
-            return [i for i in self._store.values() if not i.marked]
+        if spec == "@all": # pi 1
+            return [i for i in self._store.values()] # pi 2, s 1
+        if spec == "@focus": # pi 3
+            return [self.focus.flow] if self.focus.flow else [] # pi 4, s 2
+        elif spec == "@shown": # pi 5
+            return [i for i in self] # pi 6, s 3
+        elif spec == "@hidden": # pi 7
+            return [i for i in self._store.values() if i not in self._view] # pi 9, s 4
+        elif spec == "@marked": # pi 10
+            return [i for i in self._store.values() if i.marked] # pi 12, s 5
+        elif spec == "@unmarked": # pi 13
+            return [i for i in self._store.values() if not i.marked] # pi 15, s 6
         else:
             filt = flowfilter.parse(spec)
-            if not filt:
-                raise exceptions.CommandError("Invalid flow filter: %s" % spec)
-            return [i for i in self._store.values() if filt(i)]
-
+            if not filt: # pi 16
+                raise exceptions.CommandError("Invalid flow filter: %s" % spec)# s 7
+            return [i for i in self._store.values() if filt(i)] # pi 18, s 8
+            # m = 18 - 8 + 2 = 12
     @command.command("view.create")
     def create(self, method: str, url: str) -> None:
         try:
