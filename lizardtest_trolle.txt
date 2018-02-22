@@ -4268,25 +4268,25 @@ NLOC    Avg.NLOC  AvgCCN  Avg.token  function_cnt    file
 ================================================
   NLOC    CCN   token  PARAM  length  location  
 ------------------------------------------------
-      33     18    309      1      45 pytest_runtestloop@48-92@mitmproxy/test/full_coverage_plugin.py
-      41     19    299      2      42 put@282-323@mitmproxy/mitmproxy/tools/web/app.py
-      80     26    736      1      87 get_status@152-238@mitmproxy/mitmproxy/tools/console/statusbar.py
+      80     52    476      4     120 get_XSS_data@274-393@mitmproxy/examples/complex/xss_scanner.py
+     141     35   1025      2     219 _process_flow@239-457@mitmproxy/mitmproxy/proxy/protocol/http.py
      153     29    814      2     171 flowdetails@16-186@mitmproxy/mitmproxy/tools/console/flowdetailview.py
+      80     26    736      1      87 get_status@152-238@mitmproxy/mitmproxy/tools/console/statusbar.py
+      54     24    449      2      75 _next_layer@44-118@mitmproxy/mitmproxy/proxy/root_context.py
+      77     23    438      1      86 main@497-582@mitmproxy/pathod/pathoc.py
       73     22    517      2      86 raw_format_flow@109-194@mitmproxy/mitmproxy/tools/console/common.py
+      41     19    299      2      42 put@282-323@mitmproxy/mitmproxy/tools/web/app.py
+      45     19    334      1      63 _establish_tls_with_server@400-462@mitmproxy/mitmproxy/proxy/protocol/tls.py
+      21     19    190      2      21 resolve@421-441@mitmproxy/mitmproxy/addons/view.py
+      33     18    309      1      45 pytest_runtestloop@48-92@mitmproxy/test/full_coverage_plugin.py
+     198     18   1070      3     211 args_pathoc@12-222@mitmproxy/pathod/pathoc_cmdline.py
+      94     18    569      2     114 handle_http_request@121-234@mitmproxy/pathod/pathod.py
+      82     17    540      1      91 run@47-137@mitmproxy/mitmproxy/proxy/protocol/http_replay.py
+      39     17    336      2      47 _hash@53-99@mitmproxy/mitmproxy/addons/serverplayback.py
       38     16    209      2      52 expected_http_body_size@174-225@mitmproxy/mitmproxy/net/http/http1/read.py
       36     16    232      2      45 read@107-151@mitmproxy/mitmproxy/net/tcp.py
-      45     19    334      1      63 _establish_tls_with_server@400-462@mitmproxy/mitmproxy/proxy/protocol/tls.py
-     141     35   1025      2     219 _process_flow@239-457@mitmproxy/mitmproxy/proxy/protocol/http.py
-      82     17    540      1      91 run@47-137@mitmproxy/mitmproxy/proxy/protocol/http_replay.py
-      54     24    449      2      75 _next_layer@44-118@mitmproxy/mitmproxy/proxy/root_context.py
-      39     17    336      2      47 _hash@53-99@mitmproxy/mitmproxy/addons/serverplayback.py
-      21     19    190      2      21 resolve@421-441@mitmproxy/mitmproxy/addons/view.py
       40     16    236      2      40 parse@186-225@mitmproxy/mitmproxy/io/tnetstring.py
       50     16    433      2      76 loadBytes@828-903@mitmproxy/mitmproxy/contrib/wbxml/ASWBXML.py
-     198     18   1070      3     211 args_pathoc@12-222@mitmproxy/pathod/pathoc_cmdline.py
-      77     23    438      1      86 main@497-582@mitmproxy/pathod/pathoc.py
-      94     18    569      2     114 handle_http_request@121-234@mitmproxy/pathod/pathod.py
-      80     52    476      4     120 get_XSS_data@274-393@mitmproxy/examples/complex/xss_scanner.py
 ==========================================================================================
 Total nloc   Avg.NLOC  AvgCCN  Avg.token   Fun Cnt  Warning cnt   Fun Rt   nloc Rt
 ------------------------------------------------------------------------------------------
