@@ -238,9 +238,18 @@ class HttpLayer(base.Layer):
 
     def _process_flow(self, f):
         try:
+            with open("_process_flow_context_output.txt", "a") as text_file:
+                text_file.write("Branch 1\n")
+
             try:
+                with open("_process_flow_context_output.txt", "a") as text_file:
+                    text_file.write("Branch 2\n")
+
                 request = self.read_request_headers(f)
             except exceptions.HttpReadDisconnect:
+                with open("_process_flow_context_output.txt", "a") as text_file:
+                    text_file.write("Branch 3\n")
+
                 # don't throw an error for disconnects that happen
                 # before/between requests.
                 return False
@@ -248,6 +257,9 @@ class HttpLayer(base.Layer):
             f.request = request
 
             if request.first_line_format == "authority":
+                with open("_process_flow_context_output.txt", "a") as text_file:
+                    text_file.write("Branch 4\n")
+
                 # The standards are silent on what we should do with a CONNECT
                 # request body, so although it's not common, it's allowed.
                 f.request.data.content = b"".join(
@@ -257,10 +269,19 @@ class HttpLayer(base.Layer):
                 self.channel.ask("http_connect", f)
 
                 if self.mode is HTTPMode.regular:
+                    with open("_process_flow_context_output.txt", "a") as text_file:
+                        text_file.write("Branch 5\n")
+
                     return self.handle_regular_connect(f)
                 elif self.mode is HTTPMode.upstream:
+                    with open("_process_flow_context_output.txt", "a") as text_file:
+                        text_file.write("Branch 6\n")
+
                     return self.handle_upstream_connect(f)
                 else:
+                    with open("_process_flow_context_output.txt", "a") as text_file:
+                        text_file.write("Branch 7\n")
+
                     msg = "Unexpected CONNECT request."
                     self.send_error_response(400, msg)
                     raise exceptions.ProtocolException(msg)
@@ -271,17 +292,29 @@ class HttpLayer(base.Layer):
             validate_request_form(self.mode, request)
 
             if request.headers.get("expect", "").lower() == "100-continue":
+                with open("_process_flow_context_output.txt", "a") as text_file:
+                    text_file.write("Branch 8\n")
+
                 # TODO: We may have to use send_response_headers for HTTP2
                 # here.
                 self.send_response(http.expect_continue_response)
                 request.headers.pop("expect")
 
             if f.request.stream:
+                with open("_process_flow_context_output.txt", "a") as text_file:
+                    text_file.write("Branch 9\n")
+
                 f.request.data.content = None
             else:
+                with open("_process_flow_context_output.txt", "a") as text_file:
+                    text_file.write("Branch 10\n")
+
                 f.request.data.content = b"".join(self.read_request_body(request))
             request.timestamp_end = time.time()
         except exceptions.HttpException as e:
+            with open("_process_flow_context_output.txt", "a") as text_file:
+                text_file.write("Branch 11\n")
+
             # We optimistically guess there might be an HTTP client on the
             # other end
             self.send_error_response(400, repr(e))
@@ -298,10 +331,16 @@ class HttpLayer(base.Layer):
         # set first line format to relative in regular mode,
         # see https://github.com/mitmproxy/mitmproxy/issues/1759
         if self.mode is HTTPMode.regular and request.first_line_format == "absolute":
+            with open("_process_flow_context_output.txt", "a") as text_file:
+                text_file.write("Branch 12\n")
+
             request.first_line_format = "relative"
 
         # update host header in reverse proxy mode
         if self.config.options.mode.startswith("reverse:") and not self.config.options.keep_host_header:
+            with open("_process_flow_context_output.txt", "a") as text_file:
+                text_file.write("Branch 13\n")
+
             f.request.host_header = self.config.upstream_server.address[0]
 
         # Determine .scheme, .host and .port attributes for inline scripts. For
@@ -310,6 +349,9 @@ class HttpLayer(base.Layer):
         # scheme. For relative-form requests, we need to determine host and
         # port as well.
         if self.mode is HTTPMode.transparent:
+            with open("_process_flow_context_output.txt", "a") as text_file:
+                text_file.write("Branch 14\n")
+
             # Setting request.host also updates the host header, which we want
             # to preserve
             host_header = f.request.host_header
@@ -320,13 +362,22 @@ class HttpLayer(base.Layer):
         self.channel.ask("request", f)
 
         try:
+            with open("_process_flow_context_output.txt", "a") as text_file:
+                text_file.write("Branch 15\n")
+
             if websockets.check_handshake(request.headers) and websockets.check_client_version(request.headers):
+                with open("_process_flow_context_output.txt", "a") as text_file:
+                    text_file.write("Branch 16\n")
+
                 f.metadata['websocket'] = True
                 # We only support RFC6455 with WebSocket version 13
                 # allow inline scripts to manipulate the client handshake
                 self.channel.ask("websocket_handshake", f)
 
             if not f.response:
+                with open("_process_flow_context_output.txt", "a") as text_file:
+                    text_file.write("Branch 17\n")
+
                 self.establish_server_connection(
                     f.request.host,
                     f.request.port,
@@ -334,8 +385,14 @@ class HttpLayer(base.Layer):
                 )
 
                 try:
+                    with open("_process_flow_context_output.txt", "a") as text_file:
+                        text_file.write("Branch 18\n")
+
                     self.send_request_headers(f.request)
                 except exceptions.NetlibException as e:
+                    with open("_process_flow_context_output.txt", "a") as text_file:
+                        text_file.write("Branch 19\n")
+
                     self.log(
                         "server communication error: %s" % repr(e),
                         level="debug"
@@ -353,6 +410,9 @@ class HttpLayer(base.Layer):
                     # > send large request upstream
 
                     if isinstance(e, exceptions.Http2ProtocolException):
+                        with open("_process_flow_context_output.txt", "a") as text_file:
+                            text_file.write("Branch 20\n")
+
                         # do not try to reconnect for HTTP2
                         raise exceptions.ProtocolException(
                             "First and only attempt to get response via HTTP2 failed."
@@ -365,11 +425,20 @@ class HttpLayer(base.Layer):
                 # This is taken out of the try except block because when streaming
                 # we can't send the request body while retrying as the generator gets exhausted
                 if f.request.stream:
+                    with open("_process_flow_context_output.txt", "a") as text_file:
+                        text_file.write("Branch 21\n")
+
                     chunks = self.read_request_body(f.request)
                     if callable(f.request.stream):
+                        with open("_process_flow_context_output.txt", "a") as text_file:
+                            text_file.write("Branch 22\n")
+
                         chunks = f.request.stream(chunks)
                     self.send_request_body(f.request, chunks)
                 else:
+                    with open("_process_flow_context_output.txt", "a") as text_file:
+                        text_file.write("Branch 23\n")
+
                     self.send_request_body(f.request, [f.request.data.content])
 
                 f.response = self.read_response_headers()
@@ -379,8 +448,14 @@ class HttpLayer(base.Layer):
                 self.channel.ask("responseheaders", f)
 
                 if f.response.stream:
+                    with open("_process_flow_context_output.txt", "a") as text_file:
+                        text_file.write("Branch 24\n")
+
                     f.response.data.content = None
                 else:
+                    with open("_process_flow_context_output.txt", "a") as text_file:
+                        text_file.write("Branch 25\n")
+
                     f.response.data.content = b"".join(
                         self.read_response_body(f.request, f.response)
                     )
@@ -390,6 +465,9 @@ class HttpLayer(base.Layer):
                 # we can safely set it as the final attribute value here.
                 f.server_conn = self.server_conn
             else:
+                with open("_process_flow_context_output.txt", "a") as text_file:
+                    text_file.write("Branch 26\n")
+
                 # response was set by an inline script.
                 # we now need to emulate the responseheaders hook.
                 self.channel.ask("responseheaders", f)
@@ -398,11 +476,17 @@ class HttpLayer(base.Layer):
             self.channel.ask("response", f)
 
             if not f.response.stream:
+                with open("_process_flow_context_output.txt", "a") as text_file:
+                    text_file.write("Branch 27\n")
+
                 # no streaming:
                 # we already received the full response from the server and can
                 # send it to the client straight away.
                 self.send_response(f.response)
             else:
+                with open("_process_flow_context_output.txt", "a") as text_file:
+                    text_file.write("Branch 28\n")
+
                 # streaming:
                 # First send the headers and then transfer the response incrementally
                 self.send_response_headers(f.response)
@@ -411,15 +495,24 @@ class HttpLayer(base.Layer):
                     f.response
                 )
                 if callable(f.response.stream):
+                    with open("_process_flow_context_output.txt", "a") as text_file:
+                        text_file.write("Branch 29\n")
+
                     chunks = f.response.stream(chunks)
                 self.send_response_body(f.response, chunks)
                 f.response.timestamp_end = time.time()
 
             if self.check_close_connection(f):
+                with open("_process_flow_context_output.txt", "a") as text_file:
+                    text_file.write("Branch 30\n")
+
                 return False
 
             # Handle 101 Switching Protocols
             if f.response.status_code == 101:
+                with open("_process_flow_context_output.txt", "a") as text_file:
+                    text_file.write("Branch 31\n")
+
                 # Handle a successful HTTP 101 Switching Protocols Response,
                 # received after e.g. a WebSocket upgrade request.
                 # Check for WebSocket handshake
@@ -428,30 +521,51 @@ class HttpLayer(base.Layer):
                     websockets.check_handshake(f.response.headers)
                 )
                 if is_websocket and not self.config.options.websocket:
+                    with open("_process_flow_context_output.txt", "a") as text_file:
+                        text_file.write("Branch 32\n")
+
                     self.log(
                         "Client requested WebSocket connection, but the protocol is disabled.",
                         "info"
                     )
 
                 if is_websocket and self.config.options.websocket:
+                    with open("_process_flow_context_output.txt", "a") as text_file:
+                        text_file.write("Branch 33\n")
+
                     layer = WebSocketLayer(self, f)
                 else:
+                    with open("_process_flow_context_output.txt", "a") as text_file:
+                        text_file.write("Branch 34\n")
+
                     layer = self.ctx.next_layer(self)
                 layer()
                 return False  # should never be reached
 
         except (exceptions.ProtocolException, exceptions.NetlibException) as e:
+            with open("_process_flow_context_output.txt", "a") as text_file:
+                text_file.write("Branch 35\n")
+
             self.send_error_response(502, repr(e))
             if not f.response:
+                with open("_process_flow_context_output.txt", "a") as text_file:
+                    text_file.write("Branch 36\n")
+
                 f.error = flow.Error(str(e))
                 self.channel.ask("error", f)
                 return False
             else:
+                with open("_process_flow_context_output.txt", "a") as text_file:
+                    text_file.write("Branch 37\n")
+
                 raise exceptions.ProtocolException(
                     "Error in HTTP connection: %s" % repr(e)
                 )
         finally:
             if f:
+                with open("_process_flow_context_output.txt", "a") as text_file:
+                    text_file.write("Branch 38\n")
+
                 f.live = False
 
         return True
