@@ -42,6 +42,8 @@ class RootContext:
         return self.channel.ask("next_layer", layer)
 
     def _next_layer(self, top_layer):
+        visited = []
+
         try:
             d = top_layer.client_conn.rfile.peek(3)
         except exceptions.TcpException as e:
@@ -50,21 +52,26 @@ class RootContext:
 
         # 1. check for --ignore
         if self.config.check_ignore:
+            visited.append("1")
             ignore = self.config.check_ignore(top_layer.server_conn.address)
             if not ignore and client_tls:
+                visited.append("2")
                 try:
                     client_hello = tls.ClientHello.from_file(self.client_conn.rfile)
                 except exceptions.TlsProtocolException as e:
                     self.log("Cannot parse Client Hello: %s" % repr(e), "error")
                 else:
+                    visited.append("3")
                     ignore = self.config.check_ignore((client_hello.sni, 443))
             if ignore:
+                visited.append("4")
                 return protocol.RawTCPLayer(top_layer, ignore=True)
 
         # 2. Always insert a TLS layer, even if there's neither client nor server tls.
         # An inline script may upgrade from http to https,
         # in which case we need some form of TLS layer.
         if isinstance(top_layer, modes.ReverseProxy):
+            visited.append("5")
             return protocol.TlsLayer(
                 top_layer,
                 client_tls,
@@ -72,37 +79,48 @@ class RootContext:
                 top_layer.server_conn.address[0]
             )
         if isinstance(top_layer, protocol.ServerConnectionMixin):
+            visited.append("6")
             return protocol.TlsLayer(top_layer, client_tls, client_tls)
         if isinstance(top_layer, protocol.UpstreamConnectLayer):
             # if the user manually sets a scheme for connect requests, we use this to decide if we
             # want TLS or not.
             if top_layer.connect_request.scheme:
+                visited.append("7")
                 server_tls = top_layer.connect_request.scheme == "https"
             else:
+                visited.append("8")
                 server_tls = client_tls
             return protocol.TlsLayer(top_layer, client_tls, server_tls)
 
         # 3. In Http Proxy mode and Upstream Proxy mode, the next layer is fixed.
         if isinstance(top_layer, protocol.TlsLayer):
+            visited.append("9")
             if isinstance(top_layer.ctx, modes.HttpProxy):
+                visited.append("10")
                 return protocol.Http1Layer(top_layer, http.HTTPMode.regular)
             if isinstance(top_layer.ctx, modes.HttpUpstreamProxy):
+                visited.append("11")
                 return protocol.Http1Layer(top_layer, http.HTTPMode.upstream)
 
         # 4. Check for other TLS cases (e.g. after CONNECT).
         if client_tls:
+            visited.append("12")
             return protocol.TlsLayer(top_layer, True, True)
 
         # 4. Check for --tcp
         if self.config.check_tcp(top_layer.server_conn.address):
+            visited.append("13")
             return protocol.RawTCPLayer(top_layer)
 
         # 5. Check for TLS ALPN (HTTP1/HTTP2)
         if isinstance(top_layer, protocol.TlsLayer):
+            visited.append("14")
             alpn = top_layer.client_conn.get_alpn_proto_negotiated()
             if alpn == b'h2':
+                visited.append("15")
                 return protocol.Http2Layer(top_layer, http.HTTPMode.transparent)
             if alpn == b'http/1.1':
+                visited.append("16")
                 return protocol.Http1Layer(top_layer, http.HTTPMode.transparent)
 
         # 6. Check for raw tcp mode
@@ -112,8 +130,11 @@ class RootContext:
             all(65 <= x <= 90 or 97 <= x <= 122 for x in d)
         )
         if self.config.options.rawtcp and not is_ascii:
+            visited.append("17")
             return protocol.RawTCPLayer(top_layer)
 
+        print("Total visited: " + str(len(visited)))
+        print(visited)
         # 7. Assume HTTP1 by default
         return protocol.Http1Layer(top_layer, http.HTTPMode.transparent)
 
