@@ -150,119 +150,140 @@ class StatusBar(urwid.WidgetWrap):
         return self.ab.keypress(*args, **kwargs)
 
     def get_status(self):
-        visited = []
         r = []
 
         sreplay = self.master.addons.get("serverplayback")
         creplay = self.master.addons.get("clientplayback")
 
         if len(self.master.options.setheaders):
-            visited.append("1")
+            with open("statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 1\n")
             r.append("[")
             r.append(("heading_key", "H"))
             r.append("eaders]")
         if len(self.master.options.replacements):
-            visited.append("2")
+            with open("statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 2\n")
             r.append("[")
             r.append(("heading_key", "R"))
             r.append("eplacing]")
         if creplay.count():
-            visited.append("3")
+            with open("statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 3\n")
             r.append("[")
             r.append(("heading_key", "cplayback"))
             r.append(":%s]" % creplay.count())
         if sreplay.count():
-            visited.append("4")
+            with open("statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 4\n")
             r.append("[")
             r.append(("heading_key", "splayback"))
             r.append(":%s]" % sreplay.count())
         if self.master.options.ignore_hosts:
-            visited.append("5")
+            with open("statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 5\n")
             r.append("[")
             r.append(("heading_key", "I"))
             r.append("gnore:%d]" % len(self.master.options.ignore_hosts))
         if self.master.options.tcp_hosts:
-            visited.append("6")
+            with open("statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 6\n")
             r.append("[")
             r.append(("heading_key", "T"))
             r.append("CP:%d]" % len(self.master.options.tcp_hosts))
         if self.master.options.intercept:
-            visited.append("7")
+            with open("statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 7\n")
             r.append("[")
             if not self.master.options.intercept_active:
-                visited.append("25")
+                with open("statusbar_output.txt", "a") as text_file:
+                    text_file.write("Branch 8\n")
                 r.append("X")
             r.append(("heading_key", "i"))
             r.append(":%s]" % self.master.options.intercept)
         if self.master.options.view_filter:
-            visited.append("8")
+            with open("statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 9\n")
             r.append("[")
             r.append(("heading_key", "f"))
             r.append(":%s]" % self.master.options.view_filter)
         if self.master.options.stickycookie:
-            visited.append("9")
+            with open("statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 10\n")
             r.append("[")
             r.append(("heading_key", "t"))
             r.append(":%s]" % self.master.options.stickycookie)
         if self.master.options.stickyauth:
-            visited.append("10")
+            with open("statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 11\n")
             r.append("[")
             r.append(("heading_key", "u"))
             r.append(":%s]" % self.master.options.stickyauth)
         if self.master.options.default_contentview != "auto":
-            visited.append("11")
+            with open("statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 12\n")
             r.append("[")
             r.append(("heading_key", "M"))
             r.append(":%s]" % self.master.options.default_contentview)
         if self.master.options.has_changed("view_order"):
-            visited.append("12")
+            with open("statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 13\n")
             r.append("[")
             r.append(("heading_key", "o"))
             r.append(":%s]" % self.master.options.view_order)
 
         opts = []
         if self.master.options.anticache:
-            visited.append("13")
+            with open("statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 14\n")
             opts.append("anticache")
         if self.master.options.anticomp:
-            visited.append("14")
+            with open("statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 15\n")
             opts.append("anticomp")
         if self.master.options.showhost:
-            visited.append("15")
+            with open("statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 16\n")
             opts.append("showhost")
         if not self.master.options.server_replay_refresh:
-            visited.append("16")
+            with open("statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 17\n")
             opts.append("norefresh")
         if self.master.options.server_replay_kill_extra:
-            visited.append("17")
+            with open("statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 18\n")
             opts.append("killextra")
         if not self.master.options.upstream_cert:
-            visited.append("18")
+            with open("statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 19\n")
             opts.append("no-upstream-cert")
         if self.master.options.console_focus_follow:
-            visited.append("19")
+            with open("statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 20\n")
             opts.append("following")
         if self.master.options.stream_large_bodies:
-            visited.append("20")
+            with open("statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 21\n")
             opts.append(self.master.options.stream_large_bodies)
 
         if opts:
-            visited.append("21")
+            with open("statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 22\n")
             r.append("[%s]" % (":".join(opts)))
 
         if self.master.options.mode != "regular":
-            visited.append("22")
+            with open("statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 23\n")
             r.append("[%s]" % self.master.options.mode)
         if self.master.options.scripts:
-            visited.append("23")
+            with open("statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 24\n")
             r.append("[scripts:%s]" % len(self.master.options.scripts))
 
         if self.master.options.save_stream_file:
-            visited.append("24")
+            with open("statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 25\n")
             r.append("[W:%s]" % self.master.options.save_stream_file)
-
-        print("Total visited: " + str(len(visited)))
-        print(visited)
 
         return r
 
