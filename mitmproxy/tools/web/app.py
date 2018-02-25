@@ -20,6 +20,7 @@ from mitmproxy import optmanager
 from mitmproxy.tools.cmdline import CONFIG_PATH
 import mitmproxy.tools.web.master # noqa
 
+coverageChecker = {}
 
 def flow_to_json(flow: mitmproxy.flow.Flow) -> dict:
     """
@@ -283,45 +284,85 @@ class FlowHandler(RequestHandler):
         flow = self.flow
         flow.backup()
         try:
+            coverageChecker['branch1'] = True # branch 1
+            with open("test_output_put.txt", "a") as text_file:
+                text_file.write("Branch 1\n")
             for a, b in self.json.items():
+                with open("test_output_put.txt", "a") as text_file:
+                    text_file.write("Branch 2\n")
                 if a == "request" and hasattr(flow, "request"):
+                    with open("test_output_put.txt", "a") as text_file:
+                        text_file.write("Branch 3\n")
                     request = flow.request
                     for k, v in b.items():
+                        with open("test_output_put.txt", "a") as text_file:
+                            text_file.write("Branch 4\n")
                         if k in ["method", "scheme", "host", "path", "http_version"]:
+                            with open("test_output_put.txt", "a") as text_file:
+                                text_file.write("Branch 5\n")
                             setattr(request, k, str(v))
                         elif k == "port":
+                            with open("test_output_put.txt", "a") as text_file:
+                                text_file.write("Branch 6\n")
                             request.port = int(v)
                         elif k == "headers":
+                            with open("test_output_put.txt", "a") as text_file:
+                                text_file.write("Branch 7\n")
                             request.headers.clear()
                             for header in v:
+                                with open("test_output_put.txt", "a") as text_file:
+                                    text_file.write("Branch 8\n")
                                 request.headers.add(*header)
                         elif k == "content":
+                            with open("test_output_put.txt", "a") as text_file:
+                                text_file.write("Branch 9\n")
                             request.text = v
                         else:
+                            with open("test_output_put.txt", "a") as text_file:
+                                text_file.write("Branch 10\n")
                             raise APIError(400, "Unknown update request.{}: {}".format(k, v))
 
                 elif a == "response" and hasattr(flow, "response"):
+                    with open("test_output_put.txt", "a") as text_file:
+                        text_file.write("Branch 11\n")
                     response = flow.response
                     for k, v in b.items():
+                        with open("test_output_put.txt", "a") as text_file:
+                            text_file.write("Branch 12\n")
                         if k in ["msg", "http_version"]:
+                            with open("test_output_put.txt", "a") as text_file:
+                                text_file.write("Branch 13\n")
                             setattr(response, k, str(v))
                         elif k == "code":
+                            with open("test_output_put.txt", "a") as text_file:
+                                text_file.write("Branch 14\n")
                             response.status_code = int(v)
                         elif k == "headers":
+                            with open("test_output_put.txt", "a") as text_file:
+                                text_file.write("Branch 15\n")
                             response.headers.clear()
                             for header in v:
+                                with open("test_output_put.txt", "a") as text_file:
+                                    text_file.write("Branch 16\n")
                                 response.headers.add(*header)
                         elif k == "content":
+                            with open("test_output_put.txt", "a") as text_file:
+                                text_file.write("Branch 17\n")
                             response.text = v
                         else:
+                            with open("test_output_put.txt", "a") as text_file:
+                                text_file.write("Branch 18\n")
                             raise APIError(400, "Unknown update response.{}: {}".format(k, v))
                 else:
+                    with open("test_output_put.txt", "a") as text_file:
+                        text_file.write("Branch 19\n")
                     raise APIError(400, "Unknown update {}: {}".format(a, b))
         except APIError:
+            with open("test_output_put.txt", "a") as text_file:
+                text_file.write("Branch 20\n")
             flow.revert()
             raise
         self.view.update([flow])
-
 
 class DuplicateFlow(RequestHandler):
     def post(self, flow_id):

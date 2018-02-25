@@ -437,7 +437,9 @@ class View(collections.Sequence):
         else:
             filt = flowfilter.parse(spec)
             if not filt: # pi 16
+                print("branch 8")
                 raise exceptions.CommandError("Invalid flow filter: %s" % spec)# s 7
+            print("branch 9")
             return [i for i in self._store.values() if filt(i)] # pi 18, s 8
             # m = 18 - 8 + 2 = 12
     @command.command("view.create")

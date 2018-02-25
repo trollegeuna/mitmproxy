@@ -14,7 +14,6 @@ from mitmproxy.test import tflow
 from mitmproxy.tools.web import app
 from mitmproxy.tools.web import master as webmaster
 
-
 @pytest.fixture(scope="module")
 def no_tornado_logging():
     logging.getLogger('tornado.access').disabled = True
@@ -156,9 +155,7 @@ class TestApp(tornado.testing.AsyncHTTPTestCase):
         assert f.response.status_code == 404
         assert f.response.headers["bar"] == "baz"
         assert f.response.text == "resp"
-
         f.revert()
-
         assert self.put_json("/flows/42", {"foo": 42}).code == 400
         assert self.put_json("/flows/42", {"request": {"foo": 42}}).code == 400
         assert self.put_json("/flows/42", {"response": {"foo": 42}}).code == 400
