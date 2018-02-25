@@ -278,9 +278,13 @@ def get_XSS_data(body: Union[str, bytes], request_URL: str, injection_point: str
             string is inside a script tag """
         paths = paths_to_text(body.decode('utf-8'), text.decode("utf-8"))
         try:
+            with open("test_output_get_xss_data.txt", "a") as text_file:
+                text_file.write("Branch 1\n")
             path = paths[index]
             return "script" in path
         except IndexError:
+            with open("test_output_get_xss_data.txt", "a") as text_file:
+                text_file.write("Branch 2\n")
             return False
 
     def in_HTML(text: bytes, index: int, body: bytes) -> bool:
@@ -291,9 +295,13 @@ def get_XSS_data(body: Union[str, bytes], request_URL: str, injection_point: str
         text = text.split(b"<")[0]
         paths = paths_to_text(body.decode('utf-8'), text.decode("utf-8"))
         try:
+            with open("test_output_get_xss_data.txt", "a") as text_file:
+                text_file.write("Branch 3\n")
             path = paths[index]
             return "script" not in path
         except IndexError:
+            with open("test_output_get_xss_data.txt", "a") as text_file:
+                text_file.write("Branch 4\n")
             return False
 
     def inject_javascript_handler(html: str) -> bool:
@@ -303,7 +311,11 @@ def get_XSS_data(body: Union[str, bytes], request_URL: str, injection_point: str
 
             def handle_starttag(self, tag, attrs):
                 for name, value in attrs:
+                    with open("test_output_get_xss_data.txt", "a") as text_file:
+                        text_file.write("Branch 5\n")
                     if name == "href" and value.startswith(FRONT_WALL.decode('utf-8')):
+                        with open("test_output_get_xss_data.txt", "a") as text_file:
+                            text_file.write("Branch 6\n")
                         self.injectJSHandler = True
 
         parser = injectJSHandlerHTMLParser()
@@ -311,11 +323,15 @@ def get_XSS_data(body: Union[str, bytes], request_URL: str, injection_point: str
         return parser.injectJSHandler
     # Only convert the body to bytes if needed
     if isinstance(body, str):
+        with open("test_output_get_xss_data.txt", "a") as text_file:
+            text_file.write("Branch 7\n")
         body = bytes(body, 'utf-8')
     # Regex for between 24 and 72 (aka 24*3) characters encapsulated by the walls
     regex = re.compile(b"""%s.{24,72}?%s""" % (FRONT_WALL, BACK_WALL))
     matches = regex.findall(body)
     for index, match in enumerate(matches):
+        with open("test_output_get_xss_data.txt", "a") as text_file:
+            text_file.write("Branch 8\n")
         # Where the string is injected into the HTML
         in_script_val = in_script(match, index, body)
         in_HTML_val = in_HTML(match, index, body)
@@ -331,65 +347,91 @@ def get_XSS_data(body: Union[str, bytes], request_URL: str, injection_point: str
         inject_semi = b"se;sl" in match  # semicolons
         inject_equals = b"eq=" in match  # equals sign
         if in_script_val and inject_slash and inject_open_angle and inject_close_angle:  # e.g. <script>PAYLOAD</script>
+            with open("test_output_get_xss_data.txt", "a") as text_file:
+                text_file.write("Branch 9\n")
             return XSSData(request_URL,
                            injection_point,
                            '</script><script>alert(0)</script><script>',
                            match.decode('utf-8'))
         elif in_script_val and in_single_quotes and inject_single_quotes and inject_semi:  # e.g. <script>t='PAYLOAD';</script>
+            with open("test_output_get_xss_data.txt", "a") as text_file:
+                text_file.write("Branch 10\n")
             return XSSData(request_URL,
                            injection_point,
                            "';alert(0);g='",
                            match.decode('utf-8'))
         elif in_script_val and in_double_quotes and inject_double_quotes and inject_semi:  # e.g. <script>t="PAYLOAD";</script>
+            with open("test_output_get_xss_data.txt", "a") as text_file:
+                text_file.write("Branch 11\n")
             return XSSData(request_URL,
                            injection_point,
                            '";alert(0);g="',
                            match.decode('utf-8'))
         elif in_tag and in_single_quotes and inject_single_quotes and inject_open_angle and inject_close_angle and inject_slash:
             # e.g. <a href='PAYLOAD'>Test</a>
+            with open("test_output_get_xss_data.txt", "a") as text_file:
+                text_file.write("Branch 12\n")
             return XSSData(request_URL,
                            injection_point,
                            "'><script>alert(0)</script>",
                            match.decode('utf-8'))
         elif in_tag and in_double_quotes and inject_double_quotes and inject_open_angle and inject_close_angle and inject_slash:
             # e.g. <a href="PAYLOAD">Test</a>
+            with open("test_output_get_xss_data.txt", "a") as text_file:
+                text_file.write("Branch 13\n")
             return XSSData(request_URL,
                            injection_point,
                            '"><script>alert(0)</script>',
                            match.decode('utf-8'))
         elif in_tag and not in_double_quotes and not in_single_quotes and inject_open_angle and inject_close_angle and inject_slash:
             # e.g. <a href=PAYLOAD>Test</a>
+            with open("test_output_get_xss_data.txt", "a") as text_file:
+                text_file.write("Branch 14\n")
             return XSSData(request_URL,
                            injection_point,
                            '><script>alert(0)</script>',
                            match.decode('utf-8'))
         elif inject_javascript_handler(body.decode('utf-8')):  # e.g. <html><a href=PAYLOAD>Test</a>
+            with open("test_output_get_xss_data.txt", "a") as text_file:
+                text_file.write("Branch 15\n")
             return XSSData(request_URL,
                            injection_point,
                            'Javascript:alert(0)',
                            match.decode('utf-8'))
         elif in_tag and in_double_quotes and inject_double_quotes and inject_equals:  # e.g. <a href="PAYLOAD">Test</a>
+            with open("test_output_get_xss_data.txt", "a") as text_file:
+                text_file.write("Branch 16\n")
             return XSSData(request_URL,
                            injection_point,
                            '" onmouseover="alert(0)" t="',
                            match.decode('utf-8'))
         elif in_tag and in_single_quotes and inject_single_quotes and inject_equals:  # e.g. <a href='PAYLOAD'>Test</a>
+            with open("test_output_get_xss_data.txt", "a") as text_file:
+                text_file.write("Branch 17\n")
             return XSSData(request_URL,
                            injection_point,
                            "' onmouseover='alert(0)' t='",
                            match.decode('utf-8'))
         elif in_tag and not in_single_quotes and not in_double_quotes and inject_equals:  # e.g. <a href=PAYLOAD>Test</a>
+            with open("test_output_get_xss_data.txt", "a") as text_file:
+                text_file.write("Branch 18\n")
             return XSSData(request_URL,
                            injection_point,
                            " onmouseover=alert(0) t=",
                            match.decode('utf-8'))
         elif in_HTML_val and not in_script_val and inject_open_angle and inject_close_angle and inject_slash:  # e.g. <html>PAYLOAD</html>
+            with open("test_output_get_xss_data.txt", "a") as text_file:
+                text_file.write("Branch 19\n")
             return XSSData(request_URL,
                            injection_point,
                            '<script>alert(0)</script>',
                            match.decode('utf-8'))
         else:
+            with open("test_output_get_xss_data.txt", "a") as text_file:
+                text_file.write("Branch 20\n")
             return None
+    with open("test_output_get_xss_data.txt", "a") as text_file:
+        text_file.write("Branch 21\n")
     return None
 
 
