@@ -150,90 +150,119 @@ class StatusBar(urwid.WidgetWrap):
         return self.ab.keypress(*args, **kwargs)
 
     def get_status(self):
+        visited = []
         r = []
 
         sreplay = self.master.addons.get("serverplayback")
         creplay = self.master.addons.get("clientplayback")
 
         if len(self.master.options.setheaders):
+            visited.append("1")
             r.append("[")
             r.append(("heading_key", "H"))
             r.append("eaders]")
         if len(self.master.options.replacements):
+            visited.append("2")
             r.append("[")
             r.append(("heading_key", "R"))
             r.append("eplacing]")
         if creplay.count():
+            visited.append("3")
             r.append("[")
             r.append(("heading_key", "cplayback"))
             r.append(":%s]" % creplay.count())
         if sreplay.count():
+            visited.append("4")
             r.append("[")
             r.append(("heading_key", "splayback"))
             r.append(":%s]" % sreplay.count())
         if self.master.options.ignore_hosts:
+            visited.append("5")
             r.append("[")
             r.append(("heading_key", "I"))
             r.append("gnore:%d]" % len(self.master.options.ignore_hosts))
         if self.master.options.tcp_hosts:
+            visited.append("6")
             r.append("[")
             r.append(("heading_key", "T"))
             r.append("CP:%d]" % len(self.master.options.tcp_hosts))
         if self.master.options.intercept:
+            visited.append("7")
             r.append("[")
             if not self.master.options.intercept_active:
+                visited.append("25")
                 r.append("X")
             r.append(("heading_key", "i"))
             r.append(":%s]" % self.master.options.intercept)
         if self.master.options.view_filter:
+            visited.append("8")
             r.append("[")
             r.append(("heading_key", "f"))
             r.append(":%s]" % self.master.options.view_filter)
         if self.master.options.stickycookie:
+            visited.append("9")
             r.append("[")
             r.append(("heading_key", "t"))
             r.append(":%s]" % self.master.options.stickycookie)
         if self.master.options.stickyauth:
+            visited.append("10")
             r.append("[")
             r.append(("heading_key", "u"))
             r.append(":%s]" % self.master.options.stickyauth)
         if self.master.options.default_contentview != "auto":
+            visited.append("11")
             r.append("[")
             r.append(("heading_key", "M"))
             r.append(":%s]" % self.master.options.default_contentview)
         if self.master.options.has_changed("view_order"):
+            visited.append("12")
             r.append("[")
             r.append(("heading_key", "o"))
             r.append(":%s]" % self.master.options.view_order)
 
         opts = []
         if self.master.options.anticache:
+            visited.append("13")
             opts.append("anticache")
         if self.master.options.anticomp:
+            visited.append("14")
             opts.append("anticomp")
         if self.master.options.showhost:
+            visited.append("15")
             opts.append("showhost")
         if not self.master.options.server_replay_refresh:
+            visited.append("16")
             opts.append("norefresh")
         if self.master.options.server_replay_kill_extra:
+            visited.append("17")
             opts.append("killextra")
         if not self.master.options.upstream_cert:
+            visited.append("18")
             opts.append("no-upstream-cert")
         if self.master.options.console_focus_follow:
+            visited.append("19")
             opts.append("following")
         if self.master.options.stream_large_bodies:
+            visited.append("20")
             opts.append(self.master.options.stream_large_bodies)
 
         if opts:
+            visited.append("21")
             r.append("[%s]" % (":".join(opts)))
 
         if self.master.options.mode != "regular":
+            visited.append("22")
             r.append("[%s]" % self.master.options.mode)
         if self.master.options.scripts:
+            visited.append("23")
             r.append("[scripts:%s]" % len(self.master.options.scripts))
 
         if self.master.options.save_stream_file:
+            visited.append("24")
             r.append("[W:%s]" % self.master.options.save_stream_file)
+
+        print("Total visited: " + str(len(visited)))
+        print(visited)
 
         return r
 
