@@ -36,19 +36,13 @@ def test_format_flow_elif_branch_9():
 
 
 def test_format_flow_elif_branch_10():
-    f = tflow.tflow(resp=True)
+    f = tflow.tflow(resp=False, err=True)
     f.intercepted = False
-    f.response.status_code = 900
-    f.error = True
-    f.error.msg = "test_error"
     assert common.format_flow(f, True)
 
 
 def test_format_flow_elif_branch_21():
-    f = tflow.tflow(resp=True)
-    f.request.http_version = "HTTP/3.0"
-    f.response.status_code = 900
-    f.error.msg = True
+    f = tflow.tflow(resp=False, err=True)
     assert common.format_flow(f, True)
 
 
