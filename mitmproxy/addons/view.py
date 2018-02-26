@@ -423,22 +423,74 @@ class View(collections.Sequence):
             Resolve a flow list specification to an actual list of flows.
         """
         if spec == "@all":
+            with open('diy_coverage.txt','a') as fil:
+                fil.write('branch1\n')
             return [i for i in self._store.values()]
         if spec == "@focus":
+            with open('diy_coverage.txt','a') as fil:
+                fil.write('branch2\n')
+                if self.focus.flow:
+                    with open('diy_coverage.txt','a') as fil:
+                        fil.write('branch2.1\n')
+                else:
+                    with open('diy_coverage.txt','a') as fil:
+                        fil.write('branch2.2\n')
             return [self.focus.flow] if self.focus.flow else []
         elif spec == "@shown":
+            with open('diy_coverage.txt','a') as fil:
+                fil.write('branch3\n')
             return [i for i in self]
         elif spec == "@hidden":
-            return [i for i in self._store.values() if i not in self._view]
+            with open('diy_coverage.txt','a') as fil:
+                fil.write('branch4\n')
+            list_4 = [i for i in self._store.values() if i not in self._view]
+            if (len(list_4) > 0):
+                with open('diy_coverage.txt','a') as fil:
+                    fil.write('branch4.1\n')
+            else:
+                with open('diy_coverage.txt','a') as fil:
+                    fil.write('branch4.2\n')
+            return list_4
         elif spec == "@marked":
-            return [i for i in self._store.values() if i.marked]
+            with open('diy_coverage.txt','a') as fil:
+                fil.write('branch5\n')
+            list_5 = [i for i in self._store.values() if i.marked]
+            if (len(list_5) > 0):
+                with open('diy_coverage.txt','a') as fil:
+                    fil.write('branch5.1\n')
+            else:
+                with open('diy_coverage.txt','a') as fil:
+                    fil.write('branch5.2\n')
+            return list_5
         elif spec == "@unmarked":
-            return [i for i in self._store.values() if not i.marked]
+            with open('diy_coverage.txt','a') as fil:
+                fil.write('branch6\n')
+            test_list = [i for i in self._store.values() if not i.marked]
+            if (len(test_list) > 0):
+                with open('diy_coverage.txt','a') as fil:
+                    fil.write('branch6.1\n')
+            else:
+                with open('diy_coverage.txt','a') as fil:
+                    fil.write('branch6.2\n')
+            return test_list
         else:
+            with open('diy_coverage.txt','a') as fil:
+                fil.write('branch7\n')
             filt = flowfilter.parse(spec)
             if not filt:
+                with open('diy_coverage.txt','a') as fil:
+                    fil.write('branch8\n')
                 raise exceptions.CommandError("Invalid flow filter: %s" % spec)
-            return [i for i in self._store.values() if filt(i)]
+            with open('diy_coverage.txt','a') as fil:
+                fil.write('branch9\n')
+            list_9 = [i for i in self._store.values() if filt(i)]
+            if (len(list_9) > 0):
+                with open('diy_coverage.txt','a') as fil:
+                    fil.write('branch9.1\n')
+            else:
+                with open('diy_coverage.txt','a') as fil:
+                    fil.write('branch9.2\n')
+            return list_9
 
     @command.command("view.create")
     def create(self, method: str, url: str) -> None:
