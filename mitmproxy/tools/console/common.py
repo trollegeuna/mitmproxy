@@ -178,7 +178,7 @@ def raw_format_flow(f, flow):
             text_file.write("Branch 9\n")
         uc = "text"
 
-    elif "resp_code" in f:
+    elif "err_msg" in f:
         with open("Coverage_test_raw_format_flow@common_output.txt", "a") as text_file:
             text_file.write("Branch 10\n")
         uc = "text"
