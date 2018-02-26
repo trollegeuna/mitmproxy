@@ -76,6 +76,7 @@ class ConsoleAddon:
         self.started = False
 
     def load(self, loader):
+        print("kalle")
         loader.add_option(
             "console_layout", str, "single",
             "Console layout.",
