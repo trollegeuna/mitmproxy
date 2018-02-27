@@ -152,4 +152,19 @@ def test_flowdetail_resp():
     #check new focus
     assert fd.walker.focus == 1
 
-   
+# branch 19
+def test_flow_details_rest_timestamp():
+        # creating a test flow (mock) from tflow file, to test flowdetails who needs a http flow as input
+        testflow = tflow.tflow(resp=True)
+
+        # set a mock timestamp on the response to reach branch 19
+        testflow.response.timestamp_start = time.time()
+
+         # we can use a None valued 'state' because state isn't used in the flowdetails function
+        searchable_box_widget = flowdetailview.flowdetails(None, testflow)
+
+        # check that the returned searchable box widget has positions, thus that it returned correctly from flowdetails
+        assert searchable_box_widget.walker.positions is not None
+
+        # check that text added to parts (Response complete and first byte) is actally added to widget list
+        assert searchable_box_widget.body[17].widget_list[1].text == "Response complete" and searchable_box_widget.body[18].widget_list[1].text == "First response byte"
