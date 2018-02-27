@@ -5,8 +5,6 @@ from mitmproxy.tools.console import common, searchable
 from mitmproxy.utils import human
 from mitmproxy.utils import strutils
 
-text = []
-global_parts = []
 
 def maybe_timestamp(base, attr):
     if base is not None and getattr(base, attr):
@@ -16,6 +14,7 @@ def maybe_timestamp(base, attr):
 
 
 def flowdetails(state, flow: http.HTTPFlow):
+    text = []
 
     sc = flow.server_conn
     cc = flow.client_conn
@@ -37,7 +36,6 @@ def flowdetails(state, flow: http.HTTPFlow):
         parts = [
             ("Address", human.format_address(sc.address))
         ]
-      
         if sc.ip_address:
             with open("test_output_flowdetails.txt", "a") as text_file:
                 text_file.write("Branch 3\n")
@@ -46,14 +44,10 @@ def flowdetails(state, flow: http.HTTPFlow):
             with open("test_output_flowdetails.txt", "a") as text_file:
                 text_file.write("Branch 4\n")
             parts.append(("HTTP Version", resp.http_version))
-            global global_parts
-            global_parts = parts
         if sc.alpn_proto_negotiated:
             with open("test_output_flowdetails.txt", "a") as text_file:
                 text_file.write("Branch 5\n")
             parts.append(("ALPN", sc.alpn_proto_negotiated))
-        
-   
 
         text.extend(
             common.format_keyvals(parts, indent=4)
