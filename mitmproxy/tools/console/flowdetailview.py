@@ -5,7 +5,6 @@ from mitmproxy.tools.console import common, searchable
 from mitmproxy.utils import human
 from mitmproxy.utils import strutils
 
-
 def maybe_timestamp(base, attr):
     if base is not None and getattr(base, attr):
         return human.format_timestamp_with_milli(getattr(base, attr))
@@ -36,7 +35,7 @@ def flowdetails(state, flow: http.HTTPFlow):
             text_file.write("Branch 2\n")
         text.append(urwid.Text([("head", "Server Connection:")]))
         parts = [
-            ("Address", human.format_address(sc.address)),
+            ("Address", human.format_address(sc.address))
         ]
         if sc.ip_address:
             with open("test_output_flowdetails.txt", "a") as text_file:

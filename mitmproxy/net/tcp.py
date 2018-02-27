@@ -103,7 +103,7 @@ class Writer(_FileLike):
 
 
 class Reader(_FileLike):
-
+    
     def read(self, length):
         """
             If length is -1, we read until connection closes.
