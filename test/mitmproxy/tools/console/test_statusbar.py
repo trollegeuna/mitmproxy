@@ -25,6 +25,8 @@ def test_statusbar(monkeypatch):
         save_stream_file="foo",
     )
     m = master.ConsoleMaster(o)
+    m.options.view_order_reversed = True
+    m.view.show_marked = True
     m.options.update(view_order='url', console_focus_follow=True)
     monkeypatch.setattr(m.addons.get("clientplayback"), "count", lambda: 42)
     monkeypatch.setattr(m.addons.get("serverplayback"), "count", lambda: 42)
