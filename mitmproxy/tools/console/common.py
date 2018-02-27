@@ -197,8 +197,6 @@ def raw_format_flow(f, flow):
 def format_flow(f, focus, extended=False, hostheader=False, max_url_len=False):
     acked = False
     if f.reply and f.reply.state == "committed":
-        with open("test_output_format_flow.txt", "a") as text_file:
-            text_file.write("Branch 1\n")
         acked = True
     d = dict(
         focus=focus,
@@ -215,24 +213,14 @@ def format_flow(f, focus, extended=False, hostheader=False, max_url_len=False):
         marked=f.marked,
     )
     if f.response:
-        with open("test_output_format_flow.txt", "a") as text_file:
-            text_file.write("Branch 2\n")
         if f.response.raw_content:
-            with open("test_output_format_flow.txt", "a") as text_file:
-                text_file.write("Branch 3\n")
             contentdesc = human.pretty_size(len(f.response.raw_content))
         elif f.response.raw_content is None:
-            with open("test_output_format_flow.txt", "a") as text_file:
-                text_file.write("Branch 4\n")
             contentdesc = "[content missing]"
         else:
-            with open("test_output_format_flow.txt", "a") as text_file:
-                text_file.write("Branch 5\n")
             contentdesc = "[no content]"
         duration = 0
         if f.response.timestamp_end and f.request.timestamp_start:
-            with open("test_output_format_flow.txt", "a") as text_file:
-                text_file.write("Branch 6\n")
             duration = f.response.timestamp_end - f.request.timestamp_start
         roundtrip = human.pretty_duration(duration)
 
@@ -246,12 +234,8 @@ def format_flow(f, focus, extended=False, hostheader=False, max_url_len=False):
 
         t = f.response.headers.get("content-type")
         if t:
-            with open("test_output_format_flow.txt", "a") as text_file:
-                text_file.write("Branch 7\n")
             d["resp_ctype"] = t.split(";")[0]
         else:
-            with open("test_output_format_flow.txt", "a") as text_file:
-                text_file.write("Branch 8\n")
             d["resp_ctype"] = ""
 
     return raw_format_flow(tuple(sorted(d.items())), f)
