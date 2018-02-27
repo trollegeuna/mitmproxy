@@ -5,8 +5,6 @@ from mitmproxy.tools.console import common, searchable
 from mitmproxy.utils import human
 from mitmproxy.utils import strutils
 
-parts_copy = []
-
 def maybe_timestamp(base, attr):
     if base is not None and getattr(base, attr):
         return human.format_timestamp_with_milli(getattr(base, attr))
@@ -49,8 +47,6 @@ def flowdetails(state, flow: http.HTTPFlow):
             with open("test_output_flowdetails.txt", "a") as text_file:
                 text_file.write("Branch 5\n")
             parts.append(("ALPN", sc.alpn_proto_negotiated))
-            global parts_copy
-            parts_copy = parts
 
         text.extend(
             common.format_keyvals(parts, indent=4)
