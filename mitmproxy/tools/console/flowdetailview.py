@@ -52,7 +52,6 @@ def flowdetails(state, flow: http.HTTPFlow):
         text.extend(
             common.format_keyvals(parts, indent=4)
         )
-
         c = sc.cert
         if c:
             with open("test_output_flowdetails.txt", "a") as text_file:
