@@ -56,14 +56,14 @@ class RootContext:
             ignore = self.config.check_ignore(top_layer.server_conn.address)
             if not ignore and client_tls:
                 with open("root_context_output.txt", "a") as text_file:
-                    text_file.write("Branch 2\n")
+                    text_file.write("Branch 2\n") # HERE
                 try:
                     client_hello = tls.ClientHello.from_file(self.client_conn.rfile)
                 except exceptions.TlsProtocolException as e:
                     self.log("Cannot parse Client Hello: %s" % repr(e), "error")
                 else:
                     with open("root_context_output.txt", "a") as text_file:
-                        text_file.write("Branch 3\n")
+                        text_file.write("Branch 3\n") # HERE
                     ignore = self.config.check_ignore((client_hello.sni, 443))
             if ignore:
                 with open("root_context_output.txt", "a") as text_file:
@@ -148,7 +148,7 @@ class RootContext:
         )
         if self.config.options.rawtcp and not is_ascii:
             with open("root_context_output.txt", "a") as text_file:
-                text_file.write("Branch 18\n")
+                text_file.write("Branch 18\n") #HERE
             return protocol.RawTCPLayer(top_layer)
 
         # 7. Assume HTTP1 by default
