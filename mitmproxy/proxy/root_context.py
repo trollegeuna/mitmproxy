@@ -42,6 +42,7 @@ class RootContext:
         return self.channel.ask("next_layer", layer)
 
     def _next_layer(self, top_layer):
+
         try:
             d = top_layer.client_conn.rfile.peek(3)
         except exceptions.TcpException as e:
@@ -50,21 +51,31 @@ class RootContext:
 
         # 1. check for --ignore
         if self.config.check_ignore:
+            with open("root_context_output.txt", "a") as text_file:
+                text_file.write("Branch 1\n")
             ignore = self.config.check_ignore(top_layer.server_conn.address)
             if not ignore and client_tls:
+                with open("root_context_output.txt", "a") as text_file:
+                    text_file.write("Branch 2\n") # HERE
                 try:
                     client_hello = tls.ClientHello.from_file(self.client_conn.rfile)
                 except exceptions.TlsProtocolException as e:
                     self.log("Cannot parse Client Hello: %s" % repr(e), "error")
                 else:
+                    with open("root_context_output.txt", "a") as text_file:
+                        text_file.write("Branch 3\n") # HERE
                     ignore = self.config.check_ignore((client_hello.sni, 443))
             if ignore:
+                with open("root_context_output.txt", "a") as text_file:
+                    text_file.write("Branch 4\n")
                 return protocol.RawTCPLayer(top_layer, ignore=True)
 
         # 2. Always insert a TLS layer, even if there's neither client nor server tls.
         # An inline script may upgrade from http to https,
         # in which case we need some form of TLS layer.
         if isinstance(top_layer, modes.ReverseProxy):
+            with open("root_context_output.txt", "a") as text_file:
+                text_file.write("Branch 5\n")
             return protocol.TlsLayer(
                 top_layer,
                 client_tls,
@@ -72,37 +83,61 @@ class RootContext:
                 top_layer.server_conn.address[0]
             )
         if isinstance(top_layer, protocol.ServerConnectionMixin):
+            with open("root_context_output.txt", "a") as text_file:
+                text_file.write("Branch 6\n")
             return protocol.TlsLayer(top_layer, client_tls, client_tls)
         if isinstance(top_layer, protocol.UpstreamConnectLayer):
+            with open("root_context_output.txt", "a") as text_file:
+                text_file.write("Branch 7\n")
             # if the user manually sets a scheme for connect requests, we use this to decide if we
             # want TLS or not.
             if top_layer.connect_request.scheme:
+                with open("root_context_output.txt", "a") as text_file:
+                    text_file.write("Branch 8\n")
                 server_tls = top_layer.connect_request.scheme == "https"
             else:
+                with open("root_context_output.txt", "a") as text_file:
+                    text_file.write("Branch 9\n")
                 server_tls = client_tls
             return protocol.TlsLayer(top_layer, client_tls, server_tls)
 
         # 3. In Http Proxy mode and Upstream Proxy mode, the next layer is fixed.
         if isinstance(top_layer, protocol.TlsLayer):
+            with open("root_context_output.txt", "a") as text_file:
+                text_file.write("Branch 10\n")
             if isinstance(top_layer.ctx, modes.HttpProxy):
+                with open("root_context_output.txt", "a") as text_file:
+                    text_file.write("Branch 11\n")
                 return protocol.Http1Layer(top_layer, http.HTTPMode.regular)
             if isinstance(top_layer.ctx, modes.HttpUpstreamProxy):
+                with open("root_context_output.txt", "a") as text_file:
+                    text_file.write("Branch 12\n")
                 return protocol.Http1Layer(top_layer, http.HTTPMode.upstream)
 
         # 4. Check for other TLS cases (e.g. after CONNECT).
         if client_tls:
+            with open("root_context_output.txt", "a") as text_file:
+                text_file.write("Branch 13\n")
             return protocol.TlsLayer(top_layer, True, True)
 
         # 4. Check for --tcp
         if self.config.check_tcp(top_layer.server_conn.address):
+            with open("root_context_output.txt", "a") as text_file:
+                text_file.write("Branch 14\n")
             return protocol.RawTCPLayer(top_layer)
 
         # 5. Check for TLS ALPN (HTTP1/HTTP2)
         if isinstance(top_layer, protocol.TlsLayer):
+            with open("root_context_output.txt", "a") as text_file:
+                text_file.write("Branch 15\n")
             alpn = top_layer.client_conn.get_alpn_proto_negotiated()
             if alpn == b'h2':
+                with open("root_context_output.txt", "a") as text_file:
+                    text_file.write("Branch 16\n")
                 return protocol.Http2Layer(top_layer, http.HTTPMode.transparent)
             if alpn == b'http/1.1':
+                with open("root_context_output.txt", "a") as text_file:
+                    text_file.write("Branch 17\n")
                 return protocol.Http1Layer(top_layer, http.HTTPMode.transparent)
 
         # 6. Check for raw tcp mode
@@ -112,6 +147,8 @@ class RootContext:
             all(65 <= x <= 90 or 97 <= x <= 122 for x in d)
         )
         if self.config.options.rawtcp and not is_ascii:
+            with open("root_context_output.txt", "a") as text_file:
+                text_file.write("Branch 18\n") #HERE
             return protocol.RawTCPLayer(top_layer)
 
         # 7. Assume HTTP1 by default

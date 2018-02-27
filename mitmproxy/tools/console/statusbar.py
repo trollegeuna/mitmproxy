@@ -156,83 +156,133 @@ class StatusBar(urwid.WidgetWrap):
         creplay = self.master.addons.get("clientplayback")
 
         if len(self.master.options.setheaders):
+            with open("statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 1\n")
             r.append("[")
             r.append(("heading_key", "H"))
             r.append("eaders]")
         if len(self.master.options.replacements):
+            with open("statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 2\n")
             r.append("[")
             r.append(("heading_key", "R"))
             r.append("eplacing]")
         if creplay.count():
+            with open("statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 3\n")
             r.append("[")
             r.append(("heading_key", "cplayback"))
             r.append(":%s]" % creplay.count())
         if sreplay.count():
+            with open("statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 4\n")
             r.append("[")
             r.append(("heading_key", "splayback"))
             r.append(":%s]" % sreplay.count())
         if self.master.options.ignore_hosts:
+            with open("statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 5\n")
             r.append("[")
             r.append(("heading_key", "I"))
             r.append("gnore:%d]" % len(self.master.options.ignore_hosts))
         if self.master.options.tcp_hosts:
+            with open("statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 6\n")
             r.append("[")
             r.append(("heading_key", "T"))
             r.append("CP:%d]" % len(self.master.options.tcp_hosts))
         if self.master.options.intercept:
+            with open("statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 7\n")
             r.append("[")
             if not self.master.options.intercept_active:
+                with open("statusbar_output.txt", "a") as text_file:
+                    text_file.write("Branch 8\n")
                 r.append("X")
             r.append(("heading_key", "i"))
             r.append(":%s]" % self.master.options.intercept)
         if self.master.options.view_filter:
+            with open("statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 9\n")
             r.append("[")
             r.append(("heading_key", "f"))
             r.append(":%s]" % self.master.options.view_filter)
         if self.master.options.stickycookie:
+            with open("statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 10\n")
             r.append("[")
             r.append(("heading_key", "t"))
             r.append(":%s]" % self.master.options.stickycookie)
         if self.master.options.stickyauth:
+            with open("statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 11\n")
             r.append("[")
             r.append(("heading_key", "u"))
             r.append(":%s]" % self.master.options.stickyauth)
         if self.master.options.default_contentview != "auto":
+            with open("statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 12\n")
             r.append("[")
             r.append(("heading_key", "M"))
             r.append(":%s]" % self.master.options.default_contentview)
         if self.master.options.has_changed("view_order"):
+            with open("statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 13\n")
             r.append("[")
             r.append(("heading_key", "o"))
             r.append(":%s]" % self.master.options.view_order)
 
         opts = []
         if self.master.options.anticache:
+            with open("statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 14\n")
             opts.append("anticache")
         if self.master.options.anticomp:
+            with open("statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 15\n")
             opts.append("anticomp")
         if self.master.options.showhost:
+            with open("statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 16\n")
             opts.append("showhost")
         if not self.master.options.server_replay_refresh:
+            with open("statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 17\n")
             opts.append("norefresh")
         if self.master.options.server_replay_kill_extra:
+            with open("statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 18\n")
             opts.append("killextra")
         if not self.master.options.upstream_cert:
+            with open("statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 19\n")
             opts.append("no-upstream-cert")
         if self.master.options.console_focus_follow:
+            with open("statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 20\n")
             opts.append("following")
         if self.master.options.stream_large_bodies:
+            with open("statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 21\n")
             opts.append(self.master.options.stream_large_bodies)
 
         if opts:
+            with open("statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 22\n")
             r.append("[%s]" % (":".join(opts)))
 
         if self.master.options.mode != "regular":
+            with open("statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 23\n")
             r.append("[%s]" % self.master.options.mode)
         if self.master.options.scripts:
+            with open("statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 24\n")
             r.append("[scripts:%s]" % len(self.master.options.scripts))
 
         if self.master.options.save_stream_file:
+            with open("statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 25\n")
             r.append("[W:%s]" % self.master.options.save_stream_file)
 
         return r
