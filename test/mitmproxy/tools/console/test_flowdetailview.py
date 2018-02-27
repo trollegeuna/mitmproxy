@@ -1,4 +1,5 @@
 import urwid
+import time
 
 from mitmproxy.tools.console import flowdetailview
 from mitmproxy.tools.console import flowview
