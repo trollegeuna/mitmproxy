@@ -6,6 +6,7 @@ from mitmproxy.utils import human
 from mitmproxy.utils import strutils
 
 text = []
+global_parts = []
 
 def maybe_timestamp(base, attr):
     if base is not None and getattr(base, attr):
@@ -36,6 +37,8 @@ def flowdetails(state, flow: http.HTTPFlow):
         parts = [
             ("Address", human.format_address(sc.address))
         ]
+        global global_parts
+        global_parts = parts
         if sc.ip_address:
             with open("test_output_flowdetails.txt", "a") as text_file:
                 text_file.write("Branch 3\n")

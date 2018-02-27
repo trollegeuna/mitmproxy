@@ -39,6 +39,13 @@ def test_flowdetail_resp():
     tf = tflow.tflow(resp=True)
     fd = flowdetailview.flowdetails(None, tf)
     
+    parts = flowdetailview.global_parts
+
+    # assert stuff has been added
+    assert parts[0][0] == 'Address' and parts[0][1] == 'address:22'
+    assert parts[1][0] == 'Resolved Address' and parts[1][1] == '192.168.0.1:22'
+    assert parts[2][0] == 'HTTP Version' and parts[2][1] == 'HTTP/1.1'
+
     assert tf.response.status_code == 200
 
     # we got an actual response
