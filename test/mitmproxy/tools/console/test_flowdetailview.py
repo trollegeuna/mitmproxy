@@ -7,12 +7,7 @@ from mitmproxy.tools.console import options
 from mitmproxy.test import tflow
 from mitmproxy.tools import console
 from ... import tservers
-'''
-def test_standard():
-    testflow = tflow.tflow()
 
-    searchable_box_widget = flowdetailview.flowdetails(None, testflow)
-'''
 # branch 5
 def test_flow_details_proto_negotiated():
     # creating a test flow (mock) from tflow file, to test flowdetails who needs a http flow as input
