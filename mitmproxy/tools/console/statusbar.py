@@ -238,19 +238,27 @@ class StatusBar(urwid.WidgetWrap):
         return r
 
     def redraw(self):
+        with open("Coverage_test_redraw@statusbar_output.txt", "a") as text_file:
+            text_file.write("Branch 0\n")
         fc = len(self.master.view)
         if self.master.view.focus.flow is None:
+            with open("Coverage_test_redraw@statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 1\n")
             offset = 0
         else:
             offset = self.master.view.focus.index + 1
 
         if self.master.options.view_order_reversed:
+            with open("Coverage_test_redraw@statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 2\n")
             arrow = common.SYMBOL_UP
         else:
             arrow = common.SYMBOL_DOWN
 
         marked = ""
         if self.master.view.show_marked:
+            with open("Coverage_test_redraw@statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 3\n")
             marked = "M"
 
         t = [
@@ -258,8 +266,16 @@ class StatusBar(urwid.WidgetWrap):
         ]
 
         if self.master.options.server:
+            with open("Coverage_test_redraw@statusbar_output.txt", "a") as text_file:
+                text_file.write("Branch 4\n")
             host = self.master.options.listen_host
-            if host == "0.0.0.0" or host == "":
+            if host == "0.0.0.0":
+                with open("Coverage_test_redraw@statusbar_output.txt", "a") as text_file:
+                    text_file.write("Branch 5\n")
+                host = "*"
+            if host == "":
+                with open("Coverage_test_redraw@statusbar_output.txt", "a") as text_file:
+                    text_file.write("Branch 6\n")
                 host = "*"
             boundaddr = "[%s:%s]" % (host, self.master.options.listen_port)
         else:
