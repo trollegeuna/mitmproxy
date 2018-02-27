@@ -75,7 +75,7 @@ def test_flow_details_proto_negotiated():
     assert searchable_box_widget.body[3].widget_list[1].text == "ALPN" and searchable_box_widget.body[3].widget_list[2].text == b'tcp'
 
 # branch 15
-def test_flow_details_tls_established():
+def test_flow_details_client_tls_established():
     # creating a test flow (mock) from tflow file, to test flowdetails who needs a http flow as input
     testflow = tflow.tflow()
 
@@ -154,7 +154,7 @@ def test_flowdetail_resp():
     assert fd.walker.focus == 1
 
 # branch 19
-def test_flow_details_rest_timestamp():
+def test_flow_details_resp_timestamp():
         # creating a test flow (mock) from tflow file, to test flowdetails who needs a http flow as input
         testflow = tflow.tflow(resp=True)
 
