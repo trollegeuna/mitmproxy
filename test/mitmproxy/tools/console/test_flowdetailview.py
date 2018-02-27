@@ -21,6 +21,9 @@ def test_flow_details_proto_negotiated():
     # check that the returned searchable box widget has positions, thus that it returned correctly from flowdetails
     assert searchable_box_widget.walker.positions is not None
 
+    # check that the things added to parts (proto negotiated) in branch 5 is actually added
+    assert flowdetailview.parts_copy[2][0] == "ALPN" and flowdetailview.parts_copy[2][1] == b'tcp'
+
 # branch 15
 def test_flow_details_tls_established():
     # creating a test flow (mock) from tflow file, to test flowdetails who needs a http flow as input
