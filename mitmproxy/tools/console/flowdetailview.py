@@ -13,6 +13,8 @@ def maybe_timestamp(base, attr):
         return "active"
 
 
+
+
 def flowdetails(state, flow: http.HTTPFlow):
     text = []
 
@@ -23,28 +25,39 @@ def flowdetails(state, flow: http.HTTPFlow):
     metadata = flow.metadata
 
     if metadata is not None and len(metadata) > 0:
+        with open("test_output_flowdetails.txt", "a") as text_file:
+            text_file.write("Branch 1\n")
         parts = [(str(k), repr(v)) for k, v in metadata.items()]
         text.append(urwid.Text([("head", "Metadata:")]))
         text.extend(common.format_keyvals(parts, indent=4))
 
     if sc is not None and sc.ip_address:
+        with open("test_output_flowdetails.txt", "a") as text_file:
+            text_file.write("Branch 2\n")
         text.append(urwid.Text([("head", "Server Connection:")]))
         parts = [
             ("Address", human.format_address(sc.address)),
         ]
         if sc.ip_address:
+            with open("test_output_flowdetails.txt", "a") as text_file:
+                text_file.write("Branch 3\n")
             parts.append(("Resolved Address", human.format_address(sc.ip_address)))
         if resp:
+            with open("test_output_flowdetails.txt", "a") as text_file:
+                text_file.write("Branch 4\n")
             parts.append(("HTTP Version", resp.http_version))
         if sc.alpn_proto_negotiated:
+            with open("test_output_flowdetails.txt", "a") as text_file:
+                text_file.write("Branch 5\n")
             parts.append(("ALPN", sc.alpn_proto_negotiated))
 
         text.extend(
             common.format_keyvals(parts, indent=4)
         )
-
         c = sc.cert
         if c:
+            with open("test_output_flowdetails.txt", "a") as text_file:
+                text_file.write("Branch 6\n")
             text.append(urwid.Text([("head", "Server Certificate:")]))
             parts = [
                 ("Type", "%s, %s bits" % c.keyinfo),
@@ -79,6 +92,8 @@ def flowdetails(state, flow: http.HTTPFlow):
             ]
 
             if c.altnames:
+                with open("test_output_flowdetails.txt", "a") as text_file:
+                    text_file.write("Branch 7\n")
                 parts.append(
                     (
                         "Alt names",
@@ -90,20 +105,32 @@ def flowdetails(state, flow: http.HTTPFlow):
             )
 
     if cc is not None:
+        with open("test_output_flowdetails.txt", "a") as text_file:
+            text_file.write("Branch 8\n")
         text.append(urwid.Text([("head", "Client Connection:")]))
 
         parts = [
             ("Address", "{}:{}".format(cc.address[0], cc.address[1])),
         ]
         if req:
+            with open("test_output_flowdetails.txt", "a") as text_file:
+                text_file.write("Branch 9\n")
             parts.append(("HTTP Version", req.http_version))
         if cc.tls_version:
+            with open("test_output_flowdetails.txt", "a") as text_file:
+                text_file.write("Branch 10\n")
             parts.append(("TLS Version", cc.tls_version))
         if cc.sni:
+            with open("test_output_flowdetails.txt", "a") as text_file:
+                text_file.write("Branch 11\n")
             parts.append(("Server Name Indication", cc.sni))
         if cc.cipher_name:
+            with open("test_output_flowdetails.txt", "a") as text_file:
+                text_file.write("Branch 12\n")
             parts.append(("Cipher Name", cc.cipher_name))
         if cc.alpn_proto_negotiated:
+            with open("test_output_flowdetails.txt", "a") as text_file:
+                text_file.write("Branch 13\n")
             parts.append(("ALPN", cc.alpn_proto_negotiated))
 
         text.extend(
@@ -113,6 +140,8 @@ def flowdetails(state, flow: http.HTTPFlow):
     parts = []
 
     if cc is not None and cc.timestamp_start:
+        with open("test_output_flowdetails.txt", "a") as text_file:
+            text_file.write("Branch 14\n")
         parts.append(
             (
                 "Client conn. established",
@@ -120,6 +149,8 @@ def flowdetails(state, flow: http.HTTPFlow):
             )
         )
         if cc.tls_established:
+            with open("test_output_flowdetails.txt", "a") as text_file:
+                text_file.write("Branch 15\n")
             parts.append(
                 (
                     "Client conn. TLS handshake",
@@ -128,6 +159,8 @@ def flowdetails(state, flow: http.HTTPFlow):
             )
 
     if sc is not None and sc.timestamp_start:
+        with open("test_output_flowdetails.txt", "a") as text_file:
+            text_file.write("Branch 16\n")
         parts.append(
             (
                 "Server conn. initiated",
@@ -141,6 +174,8 @@ def flowdetails(state, flow: http.HTTPFlow):
             )
         )
         if sc.tls_established:
+            with open("test_output_flowdetails.txt", "a") as text_file:
+                text_file.write("Branch 17\n")
             parts.append(
                 (
                     "Server conn. TLS handshake",
@@ -149,6 +184,8 @@ def flowdetails(state, flow: http.HTTPFlow):
             )
 
     if req is not None and req.timestamp_start:
+        with open("test_output_flowdetails.txt", "a") as text_file:
+            text_file.write("Branch 18\n")
         parts.append(
             (
                 "First request byte",
@@ -163,6 +200,8 @@ def flowdetails(state, flow: http.HTTPFlow):
         )
 
     if resp is not None and resp.timestamp_start:
+        with open("test_output_flowdetails.txt", "a") as text_file:
+            text_file.write("Branch 19\n")
         parts.append(
             (
                 "First response byte",
@@ -177,6 +216,8 @@ def flowdetails(state, flow: http.HTTPFlow):
         )
 
     if parts:
+        with open("test_output_flowdetails.txt", "a") as text_file:
+            text_file.write("Branch 20\n")
         # sort operations by timestamp
         parts = sorted(parts, key=lambda p: p[1])
 
