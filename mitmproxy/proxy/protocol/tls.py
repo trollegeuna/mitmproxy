@@ -438,6 +438,9 @@ class TlsLayer(base.Layer):
                             with open("Coverage_test_establish_tls_with_server@tls_output.txt", "a") as text_file:
                                 text_file.write("Branch 8\n")
                             alpn.remove(b"h2")
+                        else:
+                            with open("Coverage_test_establish_tls_with_server@tls_output.txt", "a") as text_file:
+                                text_file.write("Branch 8\n")
             # if self.client_conn.tls_established and self.client_conn.get_alpn_proto_negotiated():
                 # If the client has already negotiated an ALP, then force the
                 # server to use the same. This can only happen if the host gets
