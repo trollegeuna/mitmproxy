@@ -107,10 +107,14 @@ else:
 
 @lru_cache(maxsize=800)
 def raw_format_flow(f, flow):
+    with open("Coverage_test_Improvement_raw_format_flow@common_output.txt", "a") as text_file:
+        text_file.write("Branch 0\n")
     f = dict(f)
     pile = []
     req = []
     if f["extended"]:
+        with open("Coverage_test_Improvement_raw_format_flow@common_output.txt", "a") as text_file:
+            text_file.write("Branch 1\n")
         req.append(
             fcol(
                 human.format_timestamp(f["req_timestamp"]),
@@ -118,32 +122,86 @@ def raw_format_flow(f, flow):
             )
         )
     else:
-        req.append(fcol(">>" if f["focus"] else "  ", "focus"))
+        # req.append(fcol(">>" if f["focus"] else "  ", "focus"))
+        if f["focus"]:
+            with open("Coverage_test_Improvement_raw_format_flow@common_output.txt", "a") as text_file:
+                text_file.write("Branch 2\n")
+            req.append(fcol(">>", "focus"))
+        else:
+            req.append(fcol("  ", "focus"))
 
     if f["marked"]:
+        with open("Coverage_test_Improvement_raw_format_flow@common_output.txt", "a") as text_file:
+            text_file.write("Branch 3\n")
         req.append(fcol(SYMBOL_MARK, "mark"))
 
     if f["req_is_replay"]:
+        with open("Coverage_test_Improvement_raw_format_flow@common_output.txt", "a") as text_file:
+            text_file.write("Branch 4\n")
         req.append(fcol(SYMBOL_REPLAY, "replay"))
 
-    pushed = ' PUSH_PROMISE' if 'h2-pushed-stream' in flow.metadata else ''
+    # pushed = ' PUSH_PROMISE' if 'h2-pushed-stream' in flow.metadata else ''
+
+    if 'h2-pushed-stream' in flow.metadata:
+        with open("Coverage_test_Improvement_raw_format_flow@common_output.txt", "a") as text_file:
+            text_file.write("Branch 5\n")
+        pushed = ' PUSH_PROMISE'
+    else:
+        pushed = ''
+
     req.append(fcol(f["req_method"] + pushed, "method"))
 
-    preamble = sum(i[1] for i in req) + len(req) - 1
+    # preamble = sum(i[1] for i in req) + len(req) - 1
+    temp = 0
+    for i in req:
+        with open("Coverage_test_Improvement_raw_format_flow@common_output.txt", "a") as text_file:
+            text_file.write("Branch 6\n")
+        temp = temp + i[1]
+    preamble = temp + len(req) - 1
 
-    if f["intercepted"] and not f["acked"]:
-        uc = "intercept"
-    elif "resp_code" in f or "err_msg" in f:
+    # if f["intercepted"] and not f["acked"]:
+    #     uc = "intercept"
+
+    if f["intercepted"]:
+        with open("Coverage_test_Improvement_raw_format_flow@common_output.txt", "a") as text_file:
+            text_file.write("Branch 7\n")
+        if not f["acked"]:
+            with open("Coverage_test_Improvement_raw_format_flow@common_output.txt", "a") as text_file:
+                text_file.write("Branch 8\n")
+            uc = "intercept"
+
+    # elif "resp_code" in f or "err_msg" in f:
+    #    uc = "text"
+
+    elif "resp_code" in f:
+        with open("Coverage_test_Improvement_raw_format_flow@common_output.txt", "a") as text_file:
+            text_file.write("Branch 9\n")
         uc = "text"
+
+    elif "err_msg" in f:
+        with open("Coverage_test_Improvement_raw_format_flow@common_output.txt", "a") as text_file:
+            text_file.write("Branch 10\n")
+        uc = "text"
+
     else:
         uc = "title"
 
     url = f["req_url"]
 
-    if f["max_url_len"] and len(url) > f["max_url_len"]:
-        url = url[:f["max_url_len"]] + "…"
+    # if f["max_url_len"] and len(url) > f["max_url_len"]:
+    #     url = url[:f["max_url_len"]] + "…"
+
+    if f["max_url_len"]:
+        with open("Coverage_test_Improvement_raw_format_flow@common_output.txt", "a") as text_file:
+            text_file.write("Branch 11\n")
+        if len(url) > f["max_url_len"]:
+            with open("Coverage_test_Improvement_raw_format_flow@common_output.txt", "a") as text_file:
+                text_file.write("Branch 12\n")
+            url = url[:f["max_url_len"]] + "…"
 
     if f["req_http_version"] not in ("HTTP/1.0", "HTTP/1.1"):
+        with open("Coverage_test_Improvement_raw_format_flow@common_output.txt", "a") as text_file:
+            text_file.write("Branch 13\n")
         url += " " + f["req_http_version"]
     req.append(
         urwid.Text([(uc, url)])
@@ -157,6 +215,8 @@ def raw_format_flow(f, flow):
     )
 
     if "resp_code" in f:
+        with open("Coverage_test_Improvement_raw_format_flow@common_output.txt", "a") as text_file:
+            text_file.write("Branch 14\n")
         codes = {
             2: "code_200",
             3: "code_300",
@@ -166,21 +226,39 @@ def raw_format_flow(f, flow):
         ccol = codes.get(f["resp_code"] // 100, "code_other")
         resp.append(fcol(SYMBOL_RETURN, ccol))
         if f["resp_is_replay"]:
+            with open("Coverage_test_Improvement_raw_format_flow@common_output.txt", "a") as text_file:
+                text_file.write("Branch 15\n")
             resp.append(fcol(SYMBOL_REPLAY, "replay"))
         resp.append(fcol(f["resp_code"], ccol))
         if f["extended"]:
+            with open("Coverage_test_Improvement_raw_format_flow@common_output.txt", "a") as text_file:
+                text_file.write("Branch 16\n")
             resp.append(fcol(f["resp_reason"], ccol))
-        if f["intercepted"] and f["resp_code"] and not f["acked"]:
-            rc = "intercept"
+        # if f["intercepted"] and f["resp_code"] and not f["acked"]:
+        #    rc = "intercept"
+        if f["intercepted"]:
+            with open("Coverage_test_Improvement_raw_format_flow@common_output.txt", "a") as text_file:
+                text_file.write("Branch 17\n")
+            if f["resp_code"]:
+                with open("Coverage_test_Improvement_raw_format_flow@common_output.txt", "a") as text_file:
+                    text_file.write("Branch 18\n")
+                if not f["acked"]:
+                    with open("Coverage_test_Improvement_raw_format_flow@common_output.txt", "a") as text_file:
+                        text_file.write("Branch 19\n")
+                    rc = "intercept"
         else:
             rc = "text"
 
         if f["resp_ctype"]:
+            with open("Coverage_test_Improvement_raw_format_flow@common_output.txt", "a") as text_file:
+                text_file.write("Branch 20\n")
             resp.append(fcol(f["resp_ctype"], rc))
         resp.append(fcol(f["resp_clen"], rc))
         resp.append(fcol(f["roundtrip"], rc))
 
     elif f["err_msg"]:
+        with open("Coverage_test_Improvement_raw_format_flow@common_output.txt", "a") as text_file:
+            text_file.write("Branch 21\n")
         resp.append(fcol(SYMBOL_RETURN, "error"))
         resp.append(
             urwid.Text([

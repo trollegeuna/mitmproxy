@@ -31,3 +31,18 @@ def test_statusbar(monkeypatch):
 
     bar = statusbar.StatusBar(m)  # this already causes a redraw
     assert bar.ib._w
+
+
+def test_statusbar_branch(monkeypatch):
+    o = options.Options(
+    )
+    m = master.ConsoleMaster(o)
+    m.options.view_order_reversed = True
+    m.options.listen_host = "0.0.0.0"
+    m.view.show_marked = True
+    m.options.update(view_order='url', console_focus_follow=True)
+    monkeypatch.setattr(m.addons.get("clientplayback"), "count", lambda: 42)
+    monkeypatch.setattr(m.addons.get("serverplayback"), "count", lambda: 42)
+
+    bar = statusbar.StatusBar(m)
+    assert bar.ib._w

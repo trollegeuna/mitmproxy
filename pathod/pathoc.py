@@ -495,28 +495,48 @@ class Pathoc(tcp.TCPClient):
 
 
 def main(args):  # pragma: no cover
+    with open("Coverage_test_main_output.txt", "a") as text_file:
+        text_file.write("main Branch  0\n")
     memo = set()
     p = None
 
     if args.repeat == 1:
+        with open("Coverage_test_main_output.txt", "a") as text_file:
+            text_file.write("main Branch  1\n")
         requests = args.requests
     else:
         # If we are replaying more than once, we must convert the request generators to lists
         # or they will be exhausted after the first run.
         # This is bad for the edge-case where get:/:x10000000 (see 0da3e51) is combined with -n 2,
         # but does not matter otherwise.
-        requests = [list(x) for x in args.requests]
-
+        # requests = [list(x) for x in args.requests]
+        requests = []
+        for x in args.request:
+            with open("Coverage_test_main_output.txt", "a") as text_file:
+                text_file.write("main Branch  2\n")
+            requests.append(list(x))
     try:
         requests_done = 0
         while True:
+            with open("Coverage_test_main_output.txt", "a") as text_file:
+                text_file.write("main Branch  3\n")
             if requests_done == args.repeat:
+                with open("Coverage_test_main_output.txt", "a") as text_file:
+                    text_file.write("main Branch  4\n")
                 break
-            if args.wait and requests_done > 0:
-                time.sleep(args.wait)
-
+            # if args.wait and requests_done > 0:
+            #     time.sleep(args.wait)
+            if args.wait:
+                with open("Coverage_test_main_output.txt", "a") as text_file:
+                    text_file.write("main Branch  5\n")
+                if requests_done > 0:
+                    with open("Coverage_test_main_output.txt", "a") as text_file:
+                        text_file.write("main Branch  6\n")
+                    time.sleep(args.wait)
             requests_done += 1
             if args.random:
+                with open("Coverage_test_main_output.txt", "a") as text_file:
+                    text_file.write("main Branch  7\n")
                 playlist = random.choice(requests)
             else:
                 playlist = itertools.chain.from_iterable(requests)
@@ -544,39 +564,76 @@ def main(args):  # pragma: no cover
             try:
                 with p.connect(args.connect_to, args.showssl):
                     for spec in playlist:
-                        if args.explain or args.memo:
+                        with open("Coverage_test_main_output.txt", "a") as text_file:
+                            text_file.write("main Branch  8\n")
+                        # if args.explain or args.memo:
+                        #     spec = spec.freeze(p.settings)
+                        if args.explain:
+                            with open("Coverage_test_main_output.txt", "a") as text_file:
+                                text_file.write("main Branch  9\n")
                             spec = spec.freeze(p.settings)
                         if args.memo:
+                            with open("Coverage_test_main_output.txt", "a") as text_file:
+                                text_file.write("main Branch  10\n")
+                            spec = spec.freeze(p.settings)
+                        if args.memo:
+                            with open("Coverage_test_main_output.txt", "a") as text_file:
+                                text_file.write("main Branch  11\n")
                             h = hashlib.sha256(spec.spec()).digest()
                             if h not in memo:
+                                with open("Coverage_test_main_output.txt", "a") as text_file:
+                                    text_file.write("main Branch  12\n")
                                 trycount = 0
                                 memo.add(h)
                             else:
                                 trycount += 1
                                 if trycount > args.memolimit:
+                                    with open("Coverage_test_main_output.txt", "a") as text_file:
+                                        text_file.write("main Branch  13\n")
                                     print("Memo limit exceeded...", file=sys.stderr)
                                     return
                                 else:
                                     continue
                         try:
                             ret = p.request(spec)
-                            if ret and args.oneshot:
-                                return
+                            # if ret and args.oneshot:
+                            #     return
+                            if ret:
+                                with open("Coverage_test_main_output.txt", "a") as text_file:
+                                    text_file.write("main Branch  14\n")
+                                if args.oneshot:
+                                    with open("Coverage_test_main_output.txt", "a") as text_file:
+                                        text_file.write("main Branch  15\n")
+                                    return
                             # We consume the queue when we can, so it doesn't build up.
                             for _ in p.wait(timeout=0, finish=False):
+                                with open("Coverage_test_main_output.txt", "a") as text_file:
+                                    text_file.write("main Branch  16\n")
                                 pass
                         except exceptions.NetlibException:
+                            with open("Coverage_test_main_output.txt", "a") as text_file:
+                                text_file.write("main Branch  17\n")
                             break
                     for _ in p.wait(timeout=0.01, finish=True):
+                        with open("Coverage_test_main_output.txt", "a") as text_file:
+                            text_file.write("main Branch  18\n")
                         pass
             except exceptions.TcpException as v:
+                with open("Coverage_test_main_output.txt", "a") as text_file:
+                    text_file.write("main Branch  19\n")
                 print(str(v), file=sys.stderr)
                 continue
             except PathocError as v:
+                with open("Coverage_test_main_output.txt", "a") as text_file:
+                    text_file.write("main Branch  20\n")
                 print(str(v), file=sys.stderr)
                 sys.exit(1)
 
     except KeyboardInterrupt:
+        with open("Coverage_test_main_output.txt", "a") as text_file:
+            text_file.write("main Branch  21\n")
         pass
     if p:
+        with open("Coverage_test_main_output.txt", "a") as text_file:
+            text_file.write("main Branch  22\n")
         p.stop()

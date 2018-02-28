@@ -398,22 +398,50 @@ class TlsLayer(base.Layer):
             )
 
     def _establish_tls_with_server(self):
+        with open("Coverage_test_Improvement_establish_tls_with_server@tls_output.txt", "a") as text_file:
+            text_file.write("Branch 0\n")
         self.log("Establish TLS with server", "debug")
         try:
-            alpn = None
+            # alpn = None
+            alpn = []
             if self._client_tls:
+                with open("Coverage_test_Improvement_establish_tls_with_server@tls_output.txt", "a") as text_file:
+                    text_file.write("Branch 1\n")
                 if self._client_hello.alpn_protocols:
+                    with open("Coverage_test_Improvement_establish_tls_with_server@tls_output.txt", "a") as text_file:
+                        text_file.write("Branch 2\n")
                     # We only support http/1.1 and h2.
                     # If the server only supports spdy (next to http/1.1), it may select that
                     # and mitmproxy would enter TCP passthrough mode, which we want to avoid.
-                    alpn = [
-                        x for x in self._client_hello.alpn_protocols if
-                        not (x.startswith(b"h2-") or x.startswith(b"spdy"))
-                    ]
-                if alpn and b"h2" in alpn and not self.config.options.http2:
-                    alpn.remove(b"h2")
-
-            if self.client_conn.tls_established and self.client_conn.get_alpn_proto_negotiated():
+                    # alpn = [
+                    #    x for x in self._client_hello.alpn_protocols if
+                    #    not (x.startswith(b"h2-") or x.startswith(b"spdy"))
+                    # ]
+                    for x in self._client_hello.alpn_protocols:
+                        with open("Coverage_test_Improvement_establish_tls_with_server@tls_output.txt", "a") as text_file:
+                                text_file.write("Branch 3\n")
+                        if not (x.startswith(b"h2-") or x.startswith(b"spdy")):
+                            with open("Coverage_test_Improvement_establish_tls_with_server@tls_output.txt", "a") as text_file:
+                                text_file.write("Branch 4\n")
+                            with open("Coverage_test_Improvement_establish_tls_with_server@tls_output.txt", "a") as text_file:
+                                text_file.write("Branch 5\n")
+                            alpn.append(x)
+                # if alpn and b"h2" in alpn and not self.config.options.http2:
+                #     alpn.remove(b"h2")
+                if alpn:
+                    with open("Coverage_test_Improvement_establish_tls_with_server@tls_output.txt", "a") as text_file:
+                        text_file.write("Branch 6\n")
+                    if b"h2" in alpn:
+                        with open("Coverage_test_Improvement_establish_tls_with_server@tls_output.txt", "a") as text_file:
+                            text_file.write("Branch 7\n")
+                        if not self.config.options.http2:
+                            with open("Coverage_test_Improvement_establish_tls_with_server@tls_output.txt", "a") as text_file:
+                                text_file.write("Branch 8\n")
+                            alpn.remove(b"h2")
+                        else:
+                            with open("Coverage_test_Improvement_establish_tls_with_server@tls_output.txt", "a") as text_file:
+                                text_file.write("Branch 8\n")
+            # if self.client_conn.tls_established and self.client_conn.get_alpn_proto_negotiated():
                 # If the client has already negotiated an ALP, then force the
                 # server to use the same. This can only happen if the host gets
                 # changed after the initial connection was established. E.g.:
@@ -422,18 +450,45 @@ class TlsLayer(base.Layer):
                 #   * then the first server connection negotiates http/1.1,
                 #   * but after the server_conn change, the new host offers h2
                 #   * which results in garbage because the layers don' match.
-                alpn = [self.client_conn.get_alpn_proto_negotiated()]
+                # alpn = [self.client_conn.get_alpn_proto_negotiated()]
 
+            if self.client_conn.tls_established:
+                with open("Coverage_test_Improvement_establish_tls_with_server@tls_output.txt", "a") as text_file:
+                    text_file.write("Branch 9\n")
+                if self.client_conn.get_alpn_proto_negotiated():
+                    with open("Coverage_test_Improvement_establish_tls_with_server@tls_output.txt", "a") as text_file:
+                        text_file.write("Branch 10\n")
+                    alpn = [self.client_conn.get_alpn_proto_negotiated()]
             # We pass through the list of ciphers send by the client, because some HTTP/2 servers
             # will select a non-HTTP/2 compatible cipher from our default list and then hang up
             # because it's incompatible with h2. :-)
             ciphers_server = self.config.options.ciphers_server
-            if not ciphers_server and self._client_tls:
-                ciphers_server = []
-                for id in self._client_hello.cipher_suites:
-                    if id in CIPHER_ID_NAME_MAP.keys():
-                        ciphers_server.append(CIPHER_ID_NAME_MAP[id])
-                ciphers_server = ':'.join(ciphers_server)
+
+            if not ciphers_server:
+                with open("Coverage_test_Improvement_establish_tls_with_server@tls_output.txt", "a") as text_file:
+                    text_file.write("Branch 11\n")
+                if self._client_tls:
+                    with open("Coverage_test_Improvement_establish_tls_with_server@tls_output.txt", "a") as text_file:
+                        text_file.write("Branch 12\n")
+                    ciphers_server = []
+                    for id in self._client_hello.cipher_suites:
+                        with open("Coverage_test_Improvement_establish_tls_with_server@tls_output.txt", "a") as text_file:
+                            text_file.write("Branch 13\n")
+                        if id in CIPHER_ID_NAME_MAP.keys():
+                            with open("Coverage_test_Improvement_establish_tls_with_server@tls_output.txt", "a") as text_file:
+                                text_file.write("Branch 14\n")
+                            ciphers_server.append(CIPHER_ID_NAME_MAP[id])
+                    ciphers_server = ':'.join(ciphers_server)
+            # if not ciphers_server and self._client_tls:
+            #    ciphers_server = []
+            #    for id in self._client_hello.cipher_suites:
+            #        with open("Coverage_test_Improvement_establish_tls_with_server@tls_output.txt", "a") as text_file:
+            #            text_file.write("Branch 13\n")
+            #        if id in CIPHER_ID_NAME_MAP.keys():
+            #            with open("Coverage_test_Improvement_establish_tls_with_server@tls_output.txt", "a") as text_file:
+            #                text_file.write("Branch 14\n")
+            #            ciphers_server.append(CIPHER_ID_NAME_MAP[id])
+            #    ciphers_server = ':'.join(ciphers_server)
 
             args = net_tls.client_arguments_from_options(self.config.options)
             args["cipher_list"] = ciphers_server
@@ -444,11 +499,17 @@ class TlsLayer(base.Layer):
             )
             tls_cert_err = self.server_conn.ssl_verification_error
             if tls_cert_err is not None:
+                with open("Coverage_test_Improvement_establish_tls_with_server@tls_output.txt", "a") as text_file:
+                    text_file.write("Branch 15\n")
                 self.log(str(tls_cert_err), "warn")
                 self.log("Ignoring server verification error, continuing with connection", "warn")
         except exceptions.InvalidCertificateException as e:
+            with open("Coverage_test_Improvement_establish_tls_with_server@tls_output.txt", "a") as text_file:
+                text_file.write("Branch 16\n")
             raise exceptions.InvalidServerCertificate(str(e))
         except exceptions.TlsException as e:
+            with open("Coverage_test_Improvement_establish_tls_with_server@tls_output.txt", "a") as text_file:
+                text_file.write("Branch 17\n")
             raise exceptions.TlsProtocolException(
                 "Cannot establish TLS with {host}:{port} (sni: {sni}): {e}".format(
                     host=self.server_conn.address[0],
@@ -459,6 +520,8 @@ class TlsLayer(base.Layer):
             )
 
         proto = self.alpn_for_client_connection.decode() if self.alpn_for_client_connection else '-'
+        with open("Coverage_test_Improvement_establish_tls_with_server@tls_output.txt", "a") as text_file:
+            text_file.write("Branch 18\n")
         self.log("ALPN selected by server: {}".format(proto), "debug")
 
     def _find_cert(self):
