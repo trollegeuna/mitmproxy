@@ -1,8 +1,1 @@
-{
-  "test/mitmproxy/addons/test_termlog.py::TestTermLog::()::test_output[None-expected_out0-expected_err0]": true,
-  "test/mitmproxy/addons/test_termlog.py::TestTermLog::()::test_output[outfile1-expected_out1-expected_err1]": true,
-  "test/mitmproxy/addons/test_termlog.py::TestTermLog::()::test_output[outfile2-expected_out2-expected_err2]": true,
-  "test/mitmproxy/contentviews/test_protobuf.py::test_view_protobuf_request": true,
-  "test/mitmproxy/io/test_compat.py::test_load": true,
-  "test/mitmproxy/io/test_compat.py::test_load_018": true
-}
+{}

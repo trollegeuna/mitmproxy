@@ -15,8 +15,8 @@ def test_esc():
         optlist = options.OptionsList(tctx.master)
         optlist.walker.editing = True
         ans = optlist.keypress((5, 5), ("esc"))
-        #print("This is a = %s" %(ans))
         assert ans is None
+
 
 def test_m_start():
     """Test if m_start key can be sent. If the function will return m_start"""
@@ -24,6 +24,7 @@ def test_m_start():
         optlist = options.OptionsList(tctx.master)
         ans = optlist.keypress((5, 5), ("m_start"))
         assert ans == "m_start"
+
 
 def test_m_select_coices():
     """Test m_select key works with walker.opt.choices set to True"""
@@ -33,6 +34,7 @@ def test_m_select_coices():
         optlist.walker.focus_obj.opt.choices = True
         ans = optlist.keypress((5, 5), ("m_select"))
         assert ans == "m_select"
+
 
 def test_m_select_error():
     """ Test to see if we run keypress with m_select but
